@@ -21,8 +21,4 @@ class MyFarmware():
         log("Test two move absolute", message_type='debug')
 	self.move(150,150,10,50)
         #ff
-        p={}
-        p['x']=250
-        p['y']=200
-        p['z']=10
-        self.move(p['x'],p['y'],p['z'],50)
+        self.move(300,200,30,80)
