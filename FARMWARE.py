@@ -15,6 +15,7 @@ class MyFarmware():
         """
         log("going to " + str(posx) + ", " + str(posy) + ", " +     str(posz), message_type='debug')
         send_celery_script(cp.move_absolute(location=[posx, posy, posz], offset=[0,0,0], speed=spd))
+        log("end", message_type='debug')
     
     
     def run(self):
