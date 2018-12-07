@@ -5,7 +5,7 @@ from farmware_tools import log
 FARMWARE_NAME = "jhempbot"
 
 def main():
-    log("jhempbot --> hello")
+    log("jhempbot --> Hello world")
     farmware = MyFarmware(FARMWARE_NAME)
     farmware.run()
 
