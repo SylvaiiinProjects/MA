@@ -20,4 +20,5 @@ class MyFarmware():
     def run(self):
         log("Test two move absolute", message_type='debug')
 	self.move(150,150,10,50)
-        
+        #f
+        self.move(250,200,50,80)
