@@ -19,8 +19,6 @@ class MyFarmware():
     
     def run(self):
         log("Test two move absolute", message_type='debug')
-	self.move(150,150,10,50)
+	self.move(50,150,0,80)
         log("wait ???", message_type='info')
-        send_celery_script(cp.wait(milliseconds=10000))
-        log("wait", message_type='info')
-        self.move(250,200,50,80)
+        
