@@ -20,5 +20,5 @@ class MyFarmware():
     def run(self):
         log("Test two move absolute", message_type='debug')
 	self.move(50,150,0,80)
-        log("wait ???", message_type='info')
+        log("wait ???", message_type='debug')
         
