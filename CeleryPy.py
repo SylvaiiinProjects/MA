@@ -404,4 +404,4 @@ def config_update(config_dict,package="arduino_firmware"):
     for e in config_dict:
         body.append(create_node(kind='pair', args=(create_pair(label=e, value=config_dict[e]))))
     _config_update['body'] = body
-return _config_update
+    return _config_update

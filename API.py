@@ -76,4 +76,4 @@ class API():
         for key, value in self.errors.items():
             error_string += '{} {} errors '.format(value, key)
         if error_string != '':
-log(error_string, message_type='error', title='Class API:api_response_error_printer')
+	    log(error_string, message_type='error', title='Class API:api_response_error_printer')

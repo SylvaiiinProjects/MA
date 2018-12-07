@@ -31,4 +31,4 @@ def log(message, message_type='info'):
             'message_type': message_type}})
 
 if __name__ == '__main__':
-log('Hello World!', 'success')
+    log('Hello World!', 'success')
