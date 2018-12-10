@@ -17,7 +17,7 @@ class MyFarmware():
         log("going to " + str(posx) + ", " + str(posy) + ", " +     str(posz), message_type='debug')
         log("sataaaart", message_type='debug')
         send_celery_script(cp.move_absolute(location=[posx, posy, posz], offset=[0,0,0], speed=spd))
-	sys.exit(0)
+	sys.exit(1)
         log("ennnd", message_type='debug')
         
     
