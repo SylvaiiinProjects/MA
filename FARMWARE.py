@@ -1,4 +1,5 @@
 import os
+import sys
 from farmware_tools import log
 from farmware_tools import send_celery_script
 import CeleryPy as cp
@@ -16,6 +17,7 @@ class MyFarmware():
         log("going to " + str(posx) + ", " + str(posy) + ", " +     str(posz), message_type='debug')
         log("sataaaart", message_type='debug')
         send_celery_script(cp.move_absolute(location=[posx, posy, posz], offset=[0,0,0], speed=spd))
+	sys.exit(0)
         log("ennnd", message_type='debug')
         
     
