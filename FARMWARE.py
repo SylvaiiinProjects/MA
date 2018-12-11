@@ -393,6 +393,7 @@ class MyFarmware():
         s.add(log("Move-test end.", message_type='info'))
 	s.add(self.Read(64,1))
 	send(cp.create_node(kind='execute', args=s.sequence))
+	sys.exit(0)
 
  	ss = Sequence("2", "green")
         s.add(log("Move-test finished.", message_type='info'))
