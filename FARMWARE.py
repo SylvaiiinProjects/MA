@@ -312,7 +312,6 @@ class MyFarmware():
 	    mode : 0 digital 1 analog
 	    title : description str
 	"""
-	log("Pin 64 read", message_type='debug')
 	info = send(cp.read_pin(number=pin, mode=mode, label= 'soil'))
 	return info
     
@@ -394,9 +393,8 @@ class MyFarmware():
         s.add(log("Move-test end.", message_type='info'))
 	s.add(self.Read(64,1,'soil sensor'))
 	send(cp.create_node(kind='execute', args=s.sequence)) 
-        
         log("Move-test finished.", message_type='info')
-        struct = Structure()
+        #struct = Structure()
         log("Data loaded.", message_type='info')
         
         log("Test successful.", message_type='info')
