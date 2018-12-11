@@ -6,9 +6,7 @@ from farmware_tools import log
 from farmware_tools import send_celery_script as send
 import CeleryPy as cp
 
-HEADERS = {
-    'Authorization': 'bearer {}'.format(os.environ['FARMWARE_TOKEN']),
-    'content-type': 'application/json'}
+
 
 ##List of functions and classes for ease of use
 """
@@ -269,10 +267,6 @@ class Sequence:
             }
         self.add = self.sequence['body'].append
 
-response=requests.get(os.environ['FARMWARE_URL'+'api/v1/bot/state',headers= HEADERS)
-bot_state=response.json()
-
-pos_x=bot_state['location_data']['position']['x']
     
 ##=================================================================##
 ##===                MAIN PART OF THE PROGRAM                   ===##
@@ -324,7 +318,7 @@ class MyFarmware():
     def goto(self, x, y, z):
 	self.move(x, y, 0, 100)
         self.move(x, y, z, 100)
-	self.move(self.coords[0], self.coords[1], 0, 100)
+	#self.move(self.coords[0], self.coords[1], 0, 100)
         
     
     def getTool(self, tool):
