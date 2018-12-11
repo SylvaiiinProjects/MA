@@ -407,14 +407,14 @@ class MyFarmware():
 	s.add(self.move(100,80,0,50))
 	#s.add(self.moveRel(0,0,-50,50))
         s.add(log("Move-test end.", message_type='info'))
-	s.add(self.Read(64,1))
+	#s.add(self.Read(64,1))
 	s.add(log("Move-test finished.", message_type='info'))
 	send(cp.create_node(kind='execute', args=s.sequence))
 	#sys.exit(0) doesn't work
 
- 	#ss = Sequence("2", "green")
-        s.add(log("Move-test finished.", message_type='info'))
-	#send(cp.create_node(kind='execute', args=ss.sequence))
+ 	ss = Sequence("2", "green")
+        ss.add(log("Move-test finished.", message_type='info'))
+	send(cp.create_node(kind='execute', args=ss.sequence))
         #struct = Structure()
         #log("Data loaded.", message_type='info')
         
