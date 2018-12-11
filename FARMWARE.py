@@ -313,7 +313,7 @@ class MyFarmware():
 	    mode : 0 digital 1 analog
 	    title : description str
 	"""
-	info = send(cp.read_pin(number=pin, mode=mode, label= 'soil'))
+	info = send(cp.read_pin(number=pin, mode=mode, label= '---'))
 	return info
 
     def Write(self, pin, val, m):
@@ -401,24 +401,25 @@ class MyFarmware():
     def run(self):
         log("Farmware running...", message_type='info')
         
+	# Sequence1
         s = Sequence("1", "green")
         s.add(self.move(100, 100, -80, 50))
         s.add(self.moveRel(10,50,10,50))
 	s.add(self.move(100,80,0,50))
 	#s.add(self.moveRel(0,0,-50,50))
         s.add(log("Move-test end.", message_type='info'))
-	#s.add(self.Read(64,1))
 	s.add(log("Move-test finished.", message_type='info'))
 	send(cp.create_node(kind='execute', args=s.sequence))
 	#sys.exit(0) doesn't work
 
- 	ss = Sequence("2", "green")
-        ss.add(log("Move-test finished.", message_type='info'))
+	#Sequence2 	
+	ss = Sequence("2", "green")
+        ss.add(log("Read pin 64.", message_type='info'))
+	ss.add(self.Read(64,1))
 	send(cp.create_node(kind='execute', args=ss.sequence))
         #struct = Structure()
-        #log("Data loaded.", message_type='info')
-        
-        #log("Test successful.", message_type='info')
+        log("Data loaded.", message_type='info')
+        log("Test successful.", message_type='info')
         
         ##TESTS
         
