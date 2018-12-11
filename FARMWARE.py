@@ -392,12 +392,15 @@ class MyFarmware():
 	#s.add(self.moveRel(0,0,-50,50))
         s.add(log("Move-test end.", message_type='info'))
 	s.add(self.Read(64,1))
-	send(cp.create_node(kind='execute', args=s.sequence)) 
-        log("Move-test finished.", message_type='info')
+	send(cp.create_node(kind='execute', args=s.sequence))
+
+ 	ss = Sequence("2", "green")
+        s.add(log("Move-test finished.", message_type='info'))
+	send(cp.create_node(kind='execute', args=ss.sequence))
         #struct = Structure()
-        log("Data loaded.", message_type='info')
+        #log("Data loaded.", message_type='info')
         
-        log("Test successful.", message_type='info')
+        #log("Test successful.", message_type='info')
         
         ##TESTS
         
