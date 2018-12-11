@@ -391,7 +391,7 @@ class MyFarmware():
 	s.add(self.move(100,80,0,50))
 	#s.add(self.moveRel(0,0,-50,50))
         s.add(log("Move-test end.", message_type='info'))
-	s.add(self.Read(64,1,'soil sensor'))
+	s.add(self.Read(64,1))
 	send(cp.create_node(kind='execute', args=s.sequence)) 
         log("Move-test finished.", message_type='info')
         #struct = Structure()
