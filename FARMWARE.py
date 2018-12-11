@@ -307,12 +307,13 @@ class MyFarmware():
         info = send(cp.move_absolute(location=[posx, posy, posz], offset=[0,0,0], speed=spd))
         return info
 
-    def Read(self,pin,mode,title):
+    def Read(self, pin, mode):
 	""" pin : int 64 soil sensor
 	    mode : 0 digital 1 analog
 	    title : description str
 	"""
-	info = send(cp.read_pin(number=pin, mode=mode, label=title))
+	log("Pin 64 read", message_type='debug')
+	info = send(cp.read_pin(number=pin, mode=mode, label= 'soil'))
 	return info
     
     def goto(self, x, y, z):
@@ -388,13 +389,12 @@ class MyFarmware():
         s = Sequence("1", "green")
         s.add(self.move(100, 100, -80, 50))
         s.add(self.moveRel(10,50,10,50))
-	#s.add(self.move(100,80,0,50))
+	s.add(self.move(100,80,0,50))
 	#s.add(self.moveRel(0,0,-50,50))
         s.add(log("Move-test end.", message_type='info'))
 	s.add(self.Read(64,1,'soil sensor'))
-	
-        send(cp.create_node(kind='execute', args=s.sequence)) 
-        log("Pin 64 read", message_type='info')
+	send(cp.create_node(kind='execute', args=s.sequence)) 
+        
         log("Move-test finished.", message_type='info')
         struct = Structure()
         log("Data loaded.", message_type='info')
