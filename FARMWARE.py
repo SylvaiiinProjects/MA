@@ -315,7 +315,22 @@ class MyFarmware():
 	"""
 	info = send(cp.read_pin(number=pin, mode=mode, label= 'soil'))
 	return info
+
+    def Write(self, pin, val, m):
+	"""
+	   pin : int 10 for vaccum
+	   val : 1 on / 0 off
+	   m   : 0 digital / 1 analog
+	"""
+	info = send(cp.write_pin(number=pin, value=val , mode=m))
+        return info
     
+    def exec_seq(self, id):
+	info = send(cp.execute_sequence(sequence_id=id))
+        return info
+
+
+
     def goto(self, x, y, z):
 	self.move(x, y, 0, 100)
         self.move(x, y, z, 100)
@@ -393,12 +408,13 @@ class MyFarmware():
 	#s.add(self.moveRel(0,0,-50,50))
         s.add(log("Move-test end.", message_type='info'))
 	s.add(self.Read(64,1))
+	s.add(log("Move-test finished.", message_type='info'))
 	send(cp.create_node(kind='execute', args=s.sequence))
-	sys.exit(0)
+	#sys.exit(0) doesn't work
 
- 	ss = Sequence("2", "green")
+ 	#ss = Sequence("2", "green")
         s.add(log("Move-test finished.", message_type='info'))
-	send(cp.create_node(kind='execute', args=ss.sequence))
+	#send(cp.create_node(kind='execute', args=ss.sequence))
         #struct = Structure()
         #log("Data loaded.", message_type='info')
         
