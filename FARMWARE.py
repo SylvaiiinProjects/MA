@@ -394,7 +394,7 @@ class MyFarmware():
 	s.add(self.Read(64,1,'soil sensor'))
 	
         send(cp.create_node(kind='execute', args=s.sequence)) 
-        log("Pin 64 read", message_type='info'))
+        log("Pin 64 read", message_type='info')
         log("Move-test finished.", message_type='info')
         struct = Structure()
         log("Data loaded.", message_type='info')
