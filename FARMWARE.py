@@ -1,6 +1,7 @@
 import time, os
 import pickle
 import requests
+import sys
 import xml.etree.ElementTree
 from farmware_tools import log
 from farmware_tools import send_celery_script as send
