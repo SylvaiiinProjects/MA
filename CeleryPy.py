@@ -138,7 +138,7 @@ def set_user_env(label, value):
     return _set_user_env
 
 
-@_print_json
+#@_print_json
 def move_absolute(location, offset, speed):
     """Celery Script to move to a location.
     Kind:
@@ -167,7 +167,7 @@ def move_absolute(location, offset, speed):
     return _move_absolute
 
 
-@_print_json
+#@_print_json
 def move_relative(distance=(0, 0, 0), speed=800):
     """Celery Script to move relative to the current location.
     Kind:
