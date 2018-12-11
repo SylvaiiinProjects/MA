@@ -1,10 +1,14 @@
 import time, os
 import pickle
+import request
 import xml.etree.ElementTree
 from farmware_tools import log
 from farmware_tools import send_celery_script as send
 import CeleryPy as cp
 
+HEADERS = {
+    'Authorization': 'bearer {}'.format(os.environ['FARMWARE_TOKEN']),
+    'content-type': 'application/json'}
 
 ##List of functions and classes for ease of use
 """
@@ -265,6 +269,10 @@ class Sequence:
             }
         self.add = self.sequence['body'].append
 
+response=requests.get(os.environ['FARMWARE_URL'+'api/v1/bot/state',headers= HEADERS)
+bot_state=response.json()
+
+pos_x=bot_state['location_data']['position']['x']
     
 ##=================================================================##
 ##===                MAIN PART OF THE PROGRAM                   ===##
@@ -314,8 +322,7 @@ class MyFarmware():
 	return info
     
     def goto(self, x, y, z):
-	self.coords = [x, y, z]
-        self.move(x, y, 0, 100)
+	self.move(x, y, 0, 100)
         self.move(x, y, z, 100)
 	self.move(self.coords[0], self.coords[1], 0, 100)
         
@@ -385,8 +392,8 @@ class MyFarmware():
         log("Farmware running...", message_type='info')
         
         s = Sequence("1", "green")
-        s.add(self.move(100, 100, -100, 50))
-        s.add(self.moveRel(100,100,100,50))
+        s.add(self.move(100, 100, -80, 50))
+        s.add(self.moveRel(10,50,10,50))
 	#s.add(self.move(100,80,0,50))
 	#s.add(self.moveRel(0,0,-50,50))
         s.add(log("Move-test end.", message_type='info'))
