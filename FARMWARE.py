@@ -272,12 +272,14 @@ class Sequence:
 ##=================================================================##
 ##===                MAIN PART OF THE PROGRAM                   ===##
 ##=================================================================##
-    
+
+    """ Define the origin is the most important """
+
 class MyFarmware():  
     coords = [0,0,0]
     TOKEN = ''
 
-    # coords
+    # coords pots
     coords1=[-50,0,-30]
     coords2=[-50,-400,-30]
 
@@ -348,7 +350,7 @@ class MyFarmware():
     def goto(self, x, y, z):
 	self.move(x, y, 0, 100)
         self.move(x, y, z, 100)
-	#self.move(self.coords[0], self.coords[1], 0, 100)
+	self.move(self.coords[0], self.coords[1], 0, 100)
         
     
     def getTool(self, tool):
@@ -415,7 +417,12 @@ class MyFarmware():
     def run(self):
 	log("Hello {}".format(self.input_username), message_type='info')
         log("Farmware running...", message_type='info')
-        
+       
+	v = Sequence("0", "green")
+	v.add(log("Vaccum on ", message_type='info'))
+	v.add(self.Write(10,1,0))
+	send(cp.create_node(kind='execute', args=v.sequence))
+
 	# Sequence1
         s = Sequence("1", "green")
         s.add(self.moveRel(0, 0, 100, 80))
