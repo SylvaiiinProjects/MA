@@ -417,7 +417,7 @@ class MyFarmware():
         
 	# Sequence1
         s = Sequence("1", "green")
-        s.add(self.moveRel(0, 0, 150, 80))
+        s.add(self.moveRel(0, 0, 100, 80))
         s.add(log("First move.", message_type='info'))
 	send(cp.create_node(kind='execute', args=s.sequence))
 	#sys.exit(0) doesn't work
