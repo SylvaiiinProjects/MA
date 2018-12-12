@@ -438,6 +438,12 @@ class MyFarmware():
 	s.add(self.move(self.coords_bac[0], self.coords_bac[1]-46, -350, 80))
 	s.add(self.moveRel(0,0,-60,80))
 	s.add(self.moveRel(0,0,60,80))
+	s.add(self.move(self.coords_bac[0], self.coords_bac[1]-92, -350, 80))
+	s.add(self.moveRel(0,0,-60,80))
+	s.add(self.moveRel(0,0,60,80))
+	s.add(self.move(self.coords_bac[0], self.coords_bac[1]-138, -350, 80))
+	s.add(self.moveRel(0,0,-60,80))
+	s.add(self.moveRel(0,0,60,80))
      	send(cp.create_node(kind='execute', args=s.sequence))
 	#sys.exit(0) doesn't work
 
