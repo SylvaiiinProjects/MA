@@ -283,7 +283,7 @@ class MyFarmware():
 
 
     def input_env(self):
-	self.input_username = os.environ.get(self.farmwarename.lower().replace('-','_')+"username", "nobody")
+	self.input_username = os.environ.get(self.farmwarename.lower().replace('-','_')+"username", "nobodyyy")
 
     def __init__(self,farmwarename):
         self.farmwarename = farmwarename
@@ -324,7 +324,9 @@ class MyFarmware():
 	    mode : 0 digital 1 analog
 	    title : description str
 	"""
+	
 	info = send(cp.read_pin(number=pin, mode=mode, label= '---'))
+	log("after read pin", message_type = 'info')
 	return info
 
     def Write(self, pin, val, m):
