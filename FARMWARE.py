@@ -422,19 +422,17 @@ class MyFarmware():
 	#Sequence3
 	s3 = Sequence("3", "green")
 	s3.add(self.moveRel(0,0,-150,80))
+	s3.add(self.moveRel(0, 0, 150, 80))
 	send(cp.create_node(kind='execute', args=s3.sequence))
 
-	send(cp.create_node(kind='execute', args=s.sequence))
-
+	
 	#Sequence4
 	s4 = Sequence("4", "green")
-	s5.add(log("Try to move to pot 2", message_type='info'))
+	s4.add(log("Try to move to pot 2", message_type='info'))
 	s4.add(self.move(self.coords2[0],self.coords2[1],150,80))
 	s4.add(self.moveRel(0,0,-150,80))
+	s4.add(self.moveRel(0, 0, 150, 80))
 	send(cp.create_node(kind='execute', args=s4.sequence))
-
-	send(cp.create_node(kind='execute', args=s3.sequence))
-	send(cp.create_node(kind='execute', args=s.sequence))
 
 	#Sequence6
 	s6 = Sequence("6", "green")
