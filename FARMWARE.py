@@ -437,18 +437,20 @@ class MyFarmware():
 	s.add(self.moveRel(0,0,-350,80))
 	s.add(self.move(self.coords_bac[0], self.coords_bac[1]-46, -350, 80))
 	s.add(self.moveRel(0,0,-410,80))
+	s.add(self.moveRel(0,0,-350,80))
      	send(cp.create_node(kind='execute', args=s.sequence))
 	#sys.exit(0) doesn't work
 
-	#Sequence2
+	#Sequence2 home
 	s2 = Sequence("2", "green")
-	s2.add(self.move(self.coords1[0],self.coords1[1],180,80))
+	s2.add(log("Go home ! ", message_type='info'))
+	s2.add(self.move(0,0,0,80))
 	send(cp.create_node(kind='execute', args=s2.sequence))
 	
 	#Sequence3
 	s3 = Sequence("3", "green")
 	s3.add(self.moveRel(0,0,-180,80))
-	s3.add(self.moveRel(0, 0, 180, 80))
+	#s3.add(self.moveRel(0, 0, 180, 80))
 	send(cp.create_node(kind='execute', args=s3.sequence))
 
 	
