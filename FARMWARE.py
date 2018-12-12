@@ -403,23 +403,31 @@ class MyFarmware():
         
 	# Sequence1
         s = Sequence("1", "green")
-        s.add(self.move(100, 100, -80, 50))
-        s.add(self.moveRel(10,50,10,50))
-	s.add(self.move(100,80,0,50))
-	#s.add(self.moveRel(0,0,-50,50))
+        s.add(self.move(10, 10, -80, 50))
         s.add(log("Move-test end.", message_type='info'))
-	s.add(log("Move-test finished.", message_type='info'))
 	send(cp.create_node(kind='execute', args=s.sequence))
 	#sys.exit(0) doesn't work
 
-	#Sequence2 	
-	ss = Sequence("2", "green")
+	#Sequence2
+	s2 = Sequence("2", "green")
+	s2.add(self.moveRel(0,0,150,50))
+	send(cp.create_node(kind='execute', args=s2.sequence))
+	
+	#Sequence3
+	s3 = Seqquence("3", "green")
+	s3.add(self.moveRel(0,-46,0,50))
+	send(cp.create_node(kind='execute', args=s3.sequence))
+
+
+	#Sequence4	
+	ss = Sequence("4", "green")
         ss.add(log("Read pin 64.", message_type='info'))
 	ss.add(self.Read(64,1))
+	log("Data loaded.", message_type='info')
+        log("Test successful.", message_type='info')
 	send(cp.create_node(kind='execute', args=ss.sequence))
         #struct = Structure()
-        log("Data loaded.", message_type='info')
-        log("Test successful.", message_type='info')
+        
         
         ##TESTS
         
