@@ -281,8 +281,13 @@ class MyFarmware():
     coords1=[-50,0,-30]
     coords2=[-50,-400,-30]
 
+
+    def input_env(self):
+	self.input_username = os.environ.get(self.farmwarename.lower().replace('-','_')+"username", "nobody")
+
     def __init__(self,farmwarename):
         self.farmwarename = farmwarename
+	self.input_env()
 	
 
     ##FUNCTION CONTROL
@@ -409,34 +414,34 @@ class MyFarmware():
         
 	# Sequence1
         s = Sequence("1", "green")
-        s.add(self.moveRel(0, 0, 150, 80))
+        s.add(self.moveRel(0, 0, 160, 80))
         s.add(log("First move.", message_type='info'))
 	send(cp.create_node(kind='execute', args=s.sequence))
 	#sys.exit(0) doesn't work
 
 	#Sequence2
 	s2 = Sequence("2", "green")
-	s2.add(self.move(self.coords1[0],self.coords1[1],150,80))
+	s2.add(self.move(self.coords1[0],self.coords1[1],180,80))
 	send(cp.create_node(kind='execute', args=s2.sequence))
 	
 	#Sequence3
 	s3 = Sequence("3", "green")
-	s3.add(self.moveRel(0,0,-150,80))
-	s3.add(self.moveRel(0, 0, 150, 80))
+	s3.add(self.moveRel(0,0,-180,80))
+	s3.add(self.moveRel(0, 0, 180, 80))
 	send(cp.create_node(kind='execute', args=s3.sequence))
 
 	
 	#Sequence4
 	s4 = Sequence("4", "green")
 	s4.add(log("Try to move to pot 2", message_type='info'))
-	s4.add(self.move(self.coords2[0],self.coords2[1],150,80))
-	s4.add(self.moveRel(0,0,-150,80))
-	s4.add(self.moveRel(0, 0, 150, 80))
+	s4.add(self.move(self.coords2[0],self.coords2[1],180,80))
+	s4.add(self.moveRel(0,0,-180,80))
+	s4.add(self.moveRel(0, 0, 180, 80))
 	send(cp.create_node(kind='execute', args=s4.sequence))
 
 	#Sequence6
 	s6 = Sequence("6", "green")
-	s6.add(self.move(-700,-600,150,50))
+	s6.add(self.move(-700,-600,180,80))
 	send(cp.create_node(kind='execute', args=s6.sequence))
 	
 	#Sequence40	
