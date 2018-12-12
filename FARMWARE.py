@@ -284,7 +284,7 @@ class MyFarmware():
     tool1=[0,0,0]
 
     def input_env(self):
-	self.input_username = os.environ.get("jhempbot+"_username", "nobodyyy")
+	self.input_username = os.environ.get("jhempbot"+"_username", "nobodyyy")
 
     def __init__(self,farmwarename):
         self.farmwarename = farmwarename
