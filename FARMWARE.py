@@ -434,10 +434,10 @@ class MyFarmware():
 	s.add(log("First move.", message_type='info'))
         s.add(self.move(self.coords_bac[0], self.coords_bac[1], 0, 80))
 	s.add(self.moveRel(0,0,-410,80))
-	s.add(self.moveRel(0,0,-350,80))
+	s.add(self.moveRel(0,0,60,80))
 	s.add(self.move(self.coords_bac[0], self.coords_bac[1]-46, -350, 80))
-	s.add(self.moveRel(0,0,-410,80))
-	s.add(self.moveRel(0,0,-350,80))
+	s.add(self.moveRel(0,0,-60,80))
+	s.add(self.moveRel(0,0,60,80))
      	send(cp.create_node(kind='execute', args=s.sequence))
 	#sys.exit(0) doesn't work
 
@@ -448,46 +448,46 @@ class MyFarmware():
 	send(cp.create_node(kind='execute', args=s2.sequence))
 	
 	#Sequence3
-	s3 = Sequence("3", "green")
-	s3.add(self.moveRel(0,0,-180,80))
+	#s3 = Sequence("3", "green")
+	#s3.add(self.moveRel(0,0,-180,80))
 	#s3.add(self.moveRel(0, 0, 180, 80))
-	send(cp.create_node(kind='execute', args=s3.sequence))
+	#send(cp.create_node(kind='execute', args=s3.sequence))
 
 	
 	#Sequence4
-	s4 = Sequence("4", "green")
-	s4.add(log("Try to move to pot 2", message_type='info'))
-	s4.add(self.move(self.coords2[0],self.coords2[1],180,80))
-	s4.add(self.moveRel(0,0,-180,80))
-	s4.add(self.moveRel(0, 0, 180, 80))
-	send(cp.create_node(kind='execute', args=s4.sequence))
+	#s4 = Sequence("4", "green")
+	#s4.add(log("Try to move to pot 2", message_type='info'))
+	#s4.add(self.move(self.coords2[0],self.coords2[1],180,80))
+	#s4.add(self.moveRel(0,0,-180,80))
+	#s4.add(self.moveRel(0, 0, 180, 80))
+	#send(cp.create_node(kind='execute', args=s4.sequence))
 
 	#Sequence6
-	s6 = Sequence("6", "green")
-	s6.add(self.move(-700,-600,50,80))
-	send(cp.create_node(kind='execute', args=s6.sequence))
+	#s6 = Sequence("6", "green")
+	#s6.add(self.move(-700,-600,50,80))
+	#send(cp.create_node(kind='execute', args=s6.sequence))
 	
 
 	#Sequence7
-	s7 = Sequence("7", "green")
-	s7.add(log("Get a tool", message_type='info'))
-	s7.add(self.moveRel(0, 0, 130, 80))
-	s7.add(self.move(self.tool1[0],self.tool1[1],130,80))
-	s7.add(self.move(self.tool1[0],self.tool1[1],self.tool1[2],50))
-	s7.add(self.move(self.tool1[0]-150,self.tool1[1],self.tool1[2],50))
-	s7.add(self.moveRel(0, 0, 130, 80))
-	s7.add(self.move(self.coords2[0],self.coords2[1],180,80))
-	send(cp.create_node(kind='execute', args=s7.sequence))
+	#s7 = Sequence("7", "green")
+	#s7.add(log("Get a tool", message_type='info'))
+	#s7.add(self.moveRel(0, 0, 130, 80))
+	#s7.add(self.move(self.tool1[0],self.tool1[1],130,80))
+	#s7.add(self.move(self.tool1[0],self.tool1[1],self.tool1[2],50))
+	#s7.add(self.move(self.tool1[0]-150,self.tool1[1],self.tool1[2],50))
+	#s7.add(self.moveRel(0, 0, 130, 80))
+	#s7.add(self.move(self.coords2[0],self.coords2[1],180,80))
+	#send(cp.create_node(kind='execute', args=s7.sequence))
 
 
 
 	#Sequence40	
-	ss = Sequence("40", "green")
-        ss.add(log("Read pin 64.", message_type='info'))
+	#ss = Sequence("40", "green")
+        #ss.add(log("Read pin 64.", message_type='info'))
 	#ss.add(self.Read(64,1))
-	ss.add(log("Data loaded.", message_type='info'))
-        ss.add(log("Test successful.", message_type='info'))
-	send(cp.create_node(kind='execute', args=ss.sequence))
+	#ss.add(log("Data loaded.", message_type='info'))
+        #ss.add(log("Test successful.", message_type='info'))
+	#send(cp.create_node(kind='execute', args=ss.sequence))
         #struct = Structure() pb..
         
         
