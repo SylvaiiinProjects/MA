@@ -275,10 +275,11 @@ class Sequence:
     
 class MyFarmware():  
     coords = [0,0,0]
+    x = coords[0]
     TOKEN = ''
     def __init__(self,farmwarename):
         self.farmwarename = farmwarename
-	self.x = coords[0]
+	#self.x = coords[0]
 
     ##FUNCTION CONTROL
     def waterSensor(self):
@@ -426,8 +427,8 @@ class MyFarmware():
 	
 	#Sequence5
 	s5 = Sequence("5", "green")
-	s5.add(log("Try to move to coords[0] {}".format(0), message_type='info'))
-	s5.add(self.move(self.x,0,0,50))
+	s5.add(log("Try to move to coords[0] {}".format(x), message_type='info'))
+	s5.add(self.move(int(x),0,0,50))
 	send(cp.create_node(kind='execute', args=s5.sequence))
 
 	#Sequence6
