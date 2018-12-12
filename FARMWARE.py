@@ -281,9 +281,10 @@ class MyFarmware():
     coords1=[-50,0,-30]
     coords2=[-50,-400,-30]
 
+    tool1=[0,0,0]
 
     def input_env(self):
-	self.input_username = os.environ.get(self.farmwarename.lower().replace('-','_')+"username", "nobodyyy")
+	self.input_username = os.environ.get("jhempbot+"_username", "nobodyyy")
 
     def __init__(self,farmwarename):
         self.farmwarename = farmwarename
@@ -450,7 +451,7 @@ class MyFarmware():
 	#Sequence40	
 	ss = Sequence("40", "green")
         ss.add(log("Read pin 64.", message_type='info'))
-	ss.add(self.Read(64,1))
+	#ss.add(self.Read(64,1))
 	ss.add(log("Data loaded.", message_type='info'))
         ss.add(log("Test successful.", message_type='info'))
 	send(cp.create_node(kind='execute', args=ss.sequence))
