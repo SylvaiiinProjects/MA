@@ -286,6 +286,8 @@ class MyFarmware():
     coords1=[-50,0,-30]
     coords2=[-50,-400,-30]
 
+    # coords tools
+    planter=[2677,870,-370]
     tool1=[1820,45,-109]
 
     def input_env(self):
@@ -429,7 +431,18 @@ class MyFarmware():
 	#v.add(self.Write(10,0,0))
 	#send(cp.create_node(kind='execute', args=v.sequence))
 
-	# Sequence1 ligne bac semis
+	#Sequence planter tool from origine
+	p = Sequence("10","green")
+	p.add(log("Go get Planter !.", message_type='info'))
+        p.add(self.move(self.planter[0], self.planter[1], 0, 80))
+	p.add(self.move(self.planter[0], self.planter[1], self.planter[2], 80))
+	p.add(self.move(self.planter[0]-150, self.planter[1], self.planter[2], 80))
+	p.add(self.move(self.planter[0]-150, self.planter[1],0, 80))
+	send(cp.create_node(kind='execute', args=p.sequence))
+
+
+
+	# Sequence1 ligne bac semis avec outil planter
         s = Sequence("1", "green")
 	s.add(log("First move.", message_type='info'))
         s.add(self.move(self.coords_bac[0], self.coords_bac[1], 0, 80))
@@ -446,6 +459,7 @@ class MyFarmware():
 	s.add(self.moveRel(0,0,60,80))
      	send(cp.create_node(kind='execute', args=s.sequence))
 	#sys.exit(0) doesn't work
+
 
 	#Sequence2 home
 	s2 = Sequence("2", "green")
