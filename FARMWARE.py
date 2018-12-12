@@ -410,11 +410,12 @@ class MyFarmware():
                   
     ##START POINT
     def run(self):
+	log("Hello {}".format(self.input_username), message_type='info')
         log("Farmware running...", message_type='info')
         
 	# Sequence1
         s = Sequence("1", "green")
-        s.add(self.moveRel(0, 0, 160, 80))
+        s.add(self.moveRel(0, 0, 150, 80))
         s.add(log("First move.", message_type='info'))
 	send(cp.create_node(kind='execute', args=s.sequence))
 	#sys.exit(0) doesn't work
@@ -448,8 +449,8 @@ class MyFarmware():
 	ss = Sequence("40", "green")
         ss.add(log("Read pin 64.", message_type='info'))
 	ss.add(self.Read(64,1))
-	log("Data loaded.", message_type='info')
-        log("Test successful.", message_type='info')
+	ss.add(log("Data loaded.", message_type='info'))
+        ss.add(log("Test successful.", message_type='info'))
 	send(cp.create_node(kind='execute', args=ss.sequence))
         #struct = Structure() pb..
         
