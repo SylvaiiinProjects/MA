@@ -281,7 +281,7 @@ class MyFarmware():
     coords1=[-50,0,-30]
     coords2=[-50,-400,-30]
 
-    tool1=[0,0,0]
+    tool1=[1820,45,-109]
 
     def input_env(self):
 	self.input_username = os.environ.get("jhempbot"+"_username", "nobodyyy")
@@ -448,6 +448,20 @@ class MyFarmware():
 	s6.add(self.move(-700,-600,50,80))
 	send(cp.create_node(kind='execute', args=s6.sequence))
 	
+
+	#Sequence7
+	s7 = Sequence("7", "green")
+	s7.add(log("Get a tool", message_type='info'))
+	s7.add(self.moveRel(0, 0, 130, 80))
+	s7.add(self.move(self.tool1[0],self.tool1[1],130,80))
+	s7.add(self.move(self.tool1[0],self.tool1[1],self.tool1[2],50))
+	s7.add(self.move(self.tool1[0]-150,self.tool1[1],self.tool1[2],50))
+	s7.add(self.moveRel(0, 0, 130, 80))
+	s7.add(self.move(self.coords2[0],self.coords2[1],180,80))
+	send(cp.create_node(kind='execute', args=s7.sequence))
+
+
+
 	#Sequence40	
 	ss = Sequence("40", "green")
         ss.add(log("Read pin 64.", message_type='info'))
