@@ -278,6 +278,9 @@ class Sequence:
 class MyFarmware():  
     coords = [0,0,0]
     TOKEN = ''
+	
+    #coords bac semis
+    coords_bac=[2000,1000,-410]
 
     # coords pots
     coords1=[-50,0,-30]
@@ -418,16 +421,23 @@ class MyFarmware():
 	log("Hello {}".format(self.input_username), message_type='info')
         log("Farmware running...", message_type='info')
        
-	v = Sequence("0", "green")
-	v.add(log("Vaccum on ", message_type='info'))
-	v.add(self.Write(10,1,0))
-	send(cp.create_node(kind='execute', args=v.sequence))
+	#Sequence0
+	#v = Sequence("0", "green")
+	#v.add(log("Vaccum on ", message_type='info'))
+	#v.add(self.Write(10,1,0))
+	#v.add(self.moveRel(0,0,100,50))
+	#v.add(self.Write(10,0,0))
+	#send(cp.create_node(kind='execute', args=v.sequence))
 
-	# Sequence1
+	# Sequence1 ligne bac semis
         s = Sequence("1", "green")
-        s.add(self.moveRel(0, 0, 100, 80))
-        s.add(log("First move.", message_type='info'))
-	send(cp.create_node(kind='execute', args=s.sequence))
+	s.add(log("First move.", message_type='info'))
+        s.add(self.move(self.coords_bac[0], self.coords_bac[1], 0, 80))
+	s.add(self.moveRel(0,0,-410,80))
+	s.add(self.moveRel(0,0,-350,80))
+	s.add(self.move(self.coords_bac[0], self.coords_bac[1]-46, -350, 80))
+	s.add(self.moveRel(0,0,-410,80))
+     	send(cp.create_node(kind='execute', args=s.sequence))
 	#sys.exit(0) doesn't work
 
 	#Sequence2
