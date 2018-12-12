@@ -486,20 +486,4 @@ class MyFarmware():
         #loadPlants()
         #print(list(plant.id for plant in plantList))
         
-        ##MAIN WHILE
-        while True:
-            """
-            check timelists for tasks, else wait the remaining time
-            """
-            break
-            currHour = int(self.s.currTime().split(":")[0])
-            if (currHour in self.s.waterList) and (self.s.waterList != []):
-                self.water()
-                self.s.waterList = self.s.waterList[1:]
-                
-            if (currHour in self.s.repotList) and (self.s.repotList != []):
-                self.repot()
-                del self.s.repotList[currHour] 
-                
-            currMin = int(self.s.currTime().split(":")[1])  
-	    send(cp.wait((59 - currMin)*60*1000)) #59 instead of 60 as safety
+      
