@@ -414,19 +414,34 @@ class MyFarmware():
 	send(cp.create_node(kind='execute', args=s2.sequence))
 	
 	#Sequence3
-	s3 = Seqquence("3", "green")
+	s3 = Sequence("3", "green")
 	s3.add(self.moveRel(0,-46,0,50))
 	send(cp.create_node(kind='execute', args=s3.sequence))
 
+	#Sequence4
+	s4 = Sequence("4", "green")
+	s4.add(self.moveRel(0,0,-150,50))
+	send(cp.create_node(kind='execute', args=s4.sequence))
+	
+	#Sequence5
+	s5 = Sequence("5", "green")
+	s5.add(log("Try to move to coord[0]", message_type='info'))
+	s5.add(self.move(coords[0],0,0,50))
+	send(cp.create_node(kind='execute', args=s5.sequence))
 
-	#Sequence4	
-	ss = Sequence("4", "green")
+	#Sequence6
+	s6 = Sequence("6", "green")
+	s6.add(self.move(-700,-600,50,50))
+	send(cp.create_node(kind='execute', args=s6.sequence))
+	
+	#Sequence40	
+	ss = Sequence("40", "green")
         ss.add(log("Read pin 64.", message_type='info'))
 	ss.add(self.Read(64,1))
 	log("Data loaded.", message_type='info')
         log("Test successful.", message_type='info')
 	send(cp.create_node(kind='execute', args=ss.sequence))
-        #struct = Structure()
+        #struct = Structure() pb..
         
         
         ##TESTS
