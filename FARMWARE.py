@@ -442,7 +442,7 @@ class MyFarmware():
 
 	#Sequence6
 	s6 = Sequence("6", "green")
-	s6.add(self.move(-700,-600,180,80))
+	s6.add(self.move(-700,-600,50,80))
 	send(cp.create_node(kind='execute', args=s6.sequence))
 	
 	#Sequence40	
