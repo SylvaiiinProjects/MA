@@ -290,7 +290,7 @@ class MyFarmware():
         self.farmwarename = farmwarename
 	self.input_env()
 	
-    username= self.input_username
+    
     ##FUNCTION CONTROL
     def waterSensor(self):
         water = False
@@ -413,7 +413,7 @@ class MyFarmware():
                   
     ##START POINT
     def run(self):
-	log("Hello {}".format(username), message_type='info')
+	log("Hello {}".format(self.input_username), message_type='info')
         log("Farmware running...", message_type='info')
         
 	# Sequence1
