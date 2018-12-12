@@ -409,20 +409,22 @@ class MyFarmware():
         
 	# Sequence1
         s = Sequence("1", "green")
-        s.add(self.moveRel(0, 0, 120, 80))
+        s.add(self.moveRel(0, 0, 150, 80))
         s.add(log("First move.", message_type='info'))
 	send(cp.create_node(kind='execute', args=s.sequence))
 	#sys.exit(0) doesn't work
 
 	#Sequence2
 	s2 = Sequence("2", "green")
-	s2.add(self.move(self.coords1[0],self.coords1[1],120,80))
+	s2.add(self.move(self.coords1[0],self.coords1[1],150,80))
 	send(cp.create_node(kind='execute', args=s2.sequence))
 	
 	#Sequence3
 	s3 = Sequence("3", "green")
-	s3.add(self.moveRel(0,0,150,80))
+	s3.add(self.moveRel(0,0,-150,80))
 	send(cp.create_node(kind='execute', args=s3.sequence))
+
+	send(cp.create_node(kind='execute', args=s.sequence))
 
 	#Sequence4
 	s4 = Sequence("4", "green")
@@ -432,7 +434,8 @@ class MyFarmware():
 	send(cp.create_node(kind='execute', args=s4.sequence))
 
 	send(cp.create_node(kind='execute', args=s3.sequence))
-	
+	send(cp.create_node(kind='execute', args=s.sequence))
+
 	#Sequence6
 	s6 = Sequence("6", "green")
 	s6.add(self.move(-700,-600,150,50))
