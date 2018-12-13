@@ -435,9 +435,9 @@ class MyFarmware():
 	v.add(log("Vaccum on ", message_type='info'))
 	i=2
 	while i<3:
-		v.add(self.wait(5000))
+		v.add(self.waiting(5000))
 		v.add(self.Write(10,1,0))
-		v.add(self.wait(5000))
+		v.add(self.waiting(5000))
 		i+=1
 	v.add(self.Write(10,0,0))
 	send(cp.create_node(kind='execute', args=v.sequence))
