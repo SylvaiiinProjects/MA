@@ -283,7 +283,7 @@ class MyFarmware():
     coords_bac=[2000,1000,-410]
 
     # coords pots
-    coords1=[-50,0,-30]
+    coords1=[50,80,-30]
     coords2=[-50,-400,-30]
 
     # coords tools
@@ -424,20 +424,23 @@ class MyFarmware():
 	log("Hello {}".format(self.input_username), message_type='info')
         log("Farmware running...", message_type='info')
        
-	#Sequence0
-	#v = Sequence("0", "green")
-	#v.add(log("Vaccum on ", message_type='info'))
-	#v.add(self.Write(10,1,0))
-	#v.add(self.moveRel(0,0,100,50))
-	#v.add(self.Write(10,0,0))
-	#send(cp.create_node(kind='execute', args=v.sequence))
+	# Test foto function
+	self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
+
+	Sequence0
+	v = Sequence("0", "green")
+	v.add(log("Vaccum on ", message_type='info'))
+	v.add(self.Write(10,1,0))
+	v.add(self.moveRel(0,0,-100,90))
+	v.add(self.Write(10,0,0))
+	send(cp.create_node(kind='execute', args=v.sequence))
 
 	#Sequence planter tool from origine
 	p = Sequence("10","green")
 	p.add(log("Go get Planter !.", message_type='info'))
-        p.add(self.move(self.planter[0], self.planter[1], 0, 80))
-	p.add(self.move(self.planter[0], self.planter[1], self.planter[2], 80))
-	p.add(self.move(self.planter[0]-150, self.planter[1], self.planter[2], 80))
+        p.add(self.move(self.planter[0], self.planter[1], 0, 90))
+	p.add(self.move(self.planter[0], self.planter[1], self.planter[2], 90))
+	p.add(self.move(self.planter[0]-150, self.planter[1], self.planter[2], 90))
 	p.add(self.move(self.planter[0]-150, self.planter[1],0, 80))
 	send(cp.create_node(kind='execute', args=p.sequence))
 
@@ -448,26 +451,21 @@ class MyFarmware():
 	s.add(log("First move.", message_type='info'))
         s.add(self.move(self.coords_bac[0], self.coords_bac[1], 0, 80))
 	s.add(self.moveRel(0,0,-410,80))
-	s.add(self.moveRel(0,0,60,80))
-	
+	s.add(self.moveRel(0,0,40,80))
+
+	# Loop if for each rows
 	for i in range(1,4):
 		s.add(self.move(self.coords_bac[0], self.coords_bac[1]-i*46, -350, 80))
-		s.add(self.moveRel(0,0,-60,80))
-		s.add(self.moveRel(0,0,60,80))
-	#s.add(self.move(self.coords_bac[0], self.coords_bac[1]-92, -350, 80))
-	#s.add(self.moveRel(0,0,-60,80))
-	#s.add(self.moveRel(0,0,60,80))
-	#s.add(self.move(self.coords_bac[0], self.coords_bac[1]-138, -350, 80))
-	#s.add(self.moveRel(0,0,-60,80))
-	#s.add(self.moveRel(0,0,60,80))
+		s.add(self.moveRel(0,0,-40,80))
+		s.add(self.moveRel(0,0,40,80))
+	
      	send(cp.create_node(kind='execute', args=s.sequence))
 	#sys.exit(0) doesn't work
 
 	#Sequence put tool back
 	b = Sequence("11", "green")
 	b.add(log("Put Planter back !.", message_type='info'))
-        b.add(self.move(self.planter[0]-150, self.planter[1], 0, 80))
-	b.add(self.move(self.planter[0]-150, self.planter[1], self.planter[2], 80))
+        b.add(self.move(self.planter[0]-150, self.planter[1], self.planter[2], 80))
 	b.add(self.move(self.planter[0], self.planter[1], self.planter[2], 80))
 	#up to 0 to leave tool
 	b.add(self.move(self.planter[0], self.planter[1],0, 80))
