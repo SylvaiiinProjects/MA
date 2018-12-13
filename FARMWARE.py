@@ -431,37 +431,37 @@ class MyFarmware():
         log("Farmware running...", message_type='info')
        
 	# Test goto function
-	self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
+	#self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
 
-	self.Write(10,0,0)
-	sys.exit(0)
-	log("ddfgdgdgdg", message_type='info')
-	self.Write(10,1,0)
+	#self.Write(10,0,0)
+	#sys.exit(0)
+	#log("ddfgdgdgdg", message_type='info')
+	#self.Write(10,1,0)
 	
 
 
 	#Sequence0 vaccum on
-	v = Sequence("0", "green")
-	v.add(log("Vaccum on ", message_type='info'))
-	v.add(self.waiting(500))
-	v.add(log("waiting ok", message_type='info'))
+	#v = Sequence("0", "green")
+	#v.add(log("Vaccum on ", message_type='info'))
+	#v.add(self.waiting(500))
+	#v.add(log("waiting ok", message_type='info'))
 	#While works
-	while self.i<3:
+	#while self.i<3:
 		
-		v.add(self.Write(10,1,0))
-		v.add(self.waiting(500))
-		self.i+=1
-	v.add(self.Write(10,0,0))
-	send(cp.create_node(kind='execute', args=v.sequence))
+	#	v.add(self.Write(10,1,0))
+	#	v.add(self.waiting(500))
+	#	self.i+=1
+	#v.add(self.Write(10,0,0))
+	#send(cp.create_node(kind='execute', args=v.sequence))
 
-	m = Sequence("33", "green")
-	m.add(self.goto(self.coords1[0], self.coords1[1], self.coords1[2]))
-	send(cp.create_node(kind='execute', args=m.sequence))
+	#m = Sequence("33", "green")
+	#m.add(self.goto(self.coords1[0], self.coords1[1], self.coords1[2]))
+	#send(cp.create_node(kind='execute', args=m.sequence))
 
 	#Sequence vaccum off
-	of = Sequence("22", "green")
-	of.add(self.Write(10,0,0))
-	send(cp.create_node(kind='execute', args=of.sequence))
+	#of = Sequence("22", "green")
+	#of.add(self.Write(10,0,0))
+	#send(cp.create_node(kind='execute', args=of.sequence))
 
 
 	#Sequence planter tool from origine
