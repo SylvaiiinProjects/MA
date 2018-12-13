@@ -435,7 +435,7 @@ class MyFarmware():
 	#Sequence0 vaccum on
 	v = Sequence("0", "green")
 	v.add(log("Vaccum on ", message_type='info'))
-	
+	v.add(self.waiting(5000))
 	while self.i<3:
 		v.add(self.waiting(5000))
 		v.add(self.Write(10,1,0))
