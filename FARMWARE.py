@@ -348,7 +348,7 @@ class MyFarmware():
 	   m   : 0 digital / 1 analog
 	"""
 	# or send(...)
-	info = cp._print_json((cp.write_pin(number=pin, value=val , mode=m)))
+	info = send(cp.write_pin(number=pin, value=val , mode=m))
         return info
     
     def vacuum(self):
