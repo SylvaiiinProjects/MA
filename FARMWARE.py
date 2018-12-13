@@ -347,7 +347,8 @@ class MyFarmware():
 	   val : 1 on / 0 off
 	   m   : 0 digital / 1 analog
 	"""
-	info = send(cp.write_pin(number=pin, value=val , mode=m))
+	# or send(...)
+	info = cp._print_json((cp.write_pin(number=pin, value=val , mode=m)))
         return info
     
     def exec_seq(self, id):
@@ -432,11 +433,17 @@ class MyFarmware():
 	# Test goto function
 	self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
 
+	self.Write(10,1,0)
+	self.Write(10,0,0)
+	
+
+
 	#Sequence0 vaccum on
 	v = Sequence("0", "green")
 	v.add(log("Vaccum on ", message_type='info'))
 	v.add(self.waiting(500))
 	v.add(log("waiting ok", message_type='info'))
+	#While works
 	while self.i<3:
 		
 		v.add(self.Write(10,1,0))
