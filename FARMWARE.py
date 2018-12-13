@@ -427,7 +427,7 @@ class MyFarmware():
 	# Test foto function
 	self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
 
-	Sequence0
+	#Sequence0
 	v = Sequence("0", "green")
 	v.add(log("Vaccum on ", message_type='info'))
 	v.add(self.Write(10,1,0))
