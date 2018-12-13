@@ -355,8 +355,8 @@ class MyFarmware():
 	g = Sequence("13", "green")
 	g.add(self.move(x,y,z,80))
 	g.add(self.move(0, 0, 0, 100))
-	info = send(cp.create_node(kind='execute', args='g.sequence'))
-	return 0
+	send(cp.create_node(kind='execute', args='g.sequence'))
+	
         
             
     def getTool(self, tool):
