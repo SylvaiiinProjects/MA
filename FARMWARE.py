@@ -355,7 +355,7 @@ class MyFarmware():
 	#Sequence0 vaccum on
 	v = Sequence("0", "green")
 	v.add(log("Vaccum on ", message_type='info'))
-	v.add(self.waiting(500))
+	v.add(self.waiting(5000))
 	v.add(log("waiting ok", message_type='info'))
 	#While works
 	#while self.i<3:
@@ -363,7 +363,9 @@ class MyFarmware():
 	#	v.add(self.Write(10,1,0))
 	#	v.add(self.waiting(500))
 	#	self.i+=1
-	v.add(self.Write(10,1,0))	
+	v.add(self.Write(10,1,0))
+	v.add(self.waiting(5000))
+	v.add(self.Write(10,0,0))
 	send(cp.create_node(kind='execute', args=v.sequence))	
 
     def exec_seq(self, id):
@@ -452,15 +454,15 @@ class MyFarmware():
 	# Test goto function
 	self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
 	self.gohome()
-	#self.vacuum()
+	self.vacuum()
 	
 
 	# can not stop the vacuum
-	self.Write(10,1,0)
+	#self.Write(10,1,0)
 	#sys.exit(0)
-	self.waiting(5000)
+	#self.waiting(5000)
 	log("ddfgdgdgdg", message_type='info')
-	self.Write(10,0,0)
+	#self.Write(10,0,0)
 	
 
 
