@@ -327,19 +327,18 @@ class MyFarmware():
         info = send(cp.move_absolute(location=[posx, posy, posz], offset=[0,0,0], speed=spd))
         return info
 
-    def Read(self, pin, mode):
+    def Read(self, pin, mode, label):
 	""" pin : int 64 soil sensor
 	    mode : 0 digital 1 analog
-	    title : description str
+	    label : description str
 	"""
 	
-	info = send(cp.read_pin(number=pin, mode=mode, label= '---'))
-	log("after read pin", message_type = 'info')
+	info = send(cp.read_pin(number=pin, mode=mode, label = label))
 	return info
 
     def Write(self, pin, val, m):
 	"""
-	   pin : int 10 for vaccum
+	   pin : int 10 for vaccum (0 up to 69)d
 	   val : 1 on / 0 off
 	   m   : 0 digital / 1 analog
 	"""
@@ -353,11 +352,13 @@ class MyFarmware():
 
 
     def goto(self, x, y, z):
-	self.move(x, y, 0, 100)
-        self.move(x, y, z, 100)
-	self.move(self.coords[0], self.coords[1], 0, 100)
+	g = Sequence("13", "green")
+	g.add(self.move(x,y,z,80))
+	g.add(self.move(0, 0, 0, 100))
+	info = send(cp.create_node(kind='execute', args='g.sequence'))
+	return info
         
-    
+            
     def getTool(self, tool):
         l = self.s.toolList[tool]
         self.goto(l[0] , l[1], l[2])
@@ -448,19 +449,30 @@ class MyFarmware():
         s.add(self.move(self.coords_bac[0], self.coords_bac[1], 0, 80))
 	s.add(self.moveRel(0,0,-410,80))
 	s.add(self.moveRel(0,0,60,80))
-	s.add(self.move(self.coords_bac[0], self.coords_bac[1]-46, -350, 80))
-	s.add(self.moveRel(0,0,-60,80))
-	s.add(self.moveRel(0,0,60,80))
-	s.add(self.move(self.coords_bac[0], self.coords_bac[1]-92, -350, 80))
-	s.add(self.moveRel(0,0,-60,80))
-	s.add(self.moveRel(0,0,60,80))
-	s.add(self.move(self.coords_bac[0], self.coords_bac[1]-138, -350, 80))
-	s.add(self.moveRel(0,0,-60,80))
-	s.add(self.moveRel(0,0,60,80))
+	
+	for i in range(1,4):
+		s.add(self.move(self.coords_bac[0], self.coords_bac[1]-i*46, -350, 80))
+		s.add(self.moveRel(0,0,-60,80))
+		s.add(self.moveRel(0,0,60,80))
+	#s.add(self.move(self.coords_bac[0], self.coords_bac[1]-92, -350, 80))
+	#s.add(self.moveRel(0,0,-60,80))
+	#s.add(self.moveRel(0,0,60,80))
+	#s.add(self.move(self.coords_bac[0], self.coords_bac[1]-138, -350, 80))
+	#s.add(self.moveRel(0,0,-60,80))
+	#s.add(self.moveRel(0,0,60,80))
      	send(cp.create_node(kind='execute', args=s.sequence))
 	#sys.exit(0) doesn't work
 
-
+	#Sequence put tool back
+	b = Sequence("11", "green")
+	b.add(log("Put Planter back !.", message_type='info'))
+        b.add(self.move(self.planter[0]-150, self.planter[1], 0, 80))
+	b.add(self.move(self.planter[0]-150, self.planter[1], self.planter[2], 80))
+	b.add(self.move(self.planter[0], self.planter[1], self.planter[2], 80))
+	#up to 0 to leave tool
+	b.add(self.move(self.planter[0], self.planter[1],0, 80))
+	send(cp.create_node(kind='execute', args=b.sequence))
+	
 	#Sequence2 home
 	s2 = Sequence("2", "green")
 	s2.add(log("Go home ! ", message_type='info'))
@@ -504,7 +516,7 @@ class MyFarmware():
 	#Sequence40	
 	#ss = Sequence("40", "green")
         #ss.add(log("Read pin 64.", message_type='info'))
-	#ss.add(self.Read(64,1))
+	#ss.add(self.Read(64,1,'Soil'))
 	#ss.add(log("Data loaded.", message_type='info'))
         #ss.add(log("Test successful.", message_type='info'))
 	#send(cp.create_node(kind='execute', args=ss.sequence))
