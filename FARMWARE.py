@@ -431,6 +431,7 @@ class MyFarmware():
 	v = Sequence("0", "green")
 	v.add(log("Vaccum on ", message_type='info'))
 	v.add(self.Write(10,1,0))
+	v.add(self.Write(10,0,0))
 	send(cp.create_node(kind='execute', args=v.sequence))
 
 	m = Sequence("33", "green")
