@@ -355,8 +355,8 @@ class MyFarmware():
 	g = Sequence("13", "green")
 	g.add(self.move(x,y,z,80))
 	g.add(self.move(0, 0, 0, 100))
-	send(cp.create_node(kind='execute', args='g.sequence'))
-	
+	info = send(cp.create_node(kind='execute', args='g.sequence'))
+	return info
         
             
     def getTool(self, tool):
@@ -430,6 +430,7 @@ class MyFarmware():
 	#Sequence0 vaccum on
 	v = Sequence("0", "green")
 	v.add(log("Vaccum on ", message_type='info'))
+	v.add(self.Write(10,1,0))
 	send(cp.create_node(kind='execute', args=v.sequence))
 
 	m = Sequence("33", "green")
