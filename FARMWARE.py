@@ -310,8 +310,8 @@ class MyFarmware():
     
     def waiting(self,time):
 	log("Waiting {} ms".format(time), message_type='debug')
-	#info = send(cp.wait(milliseconds=time))
-        #return info
+	info = send(cp.wait(milliseconds=time))
+        return info
 
     ##MOVEMENT
     def moveRel(self, distx, disty, distz, spd):
@@ -380,7 +380,7 @@ class MyFarmware():
     def goto(self, x, y, z):
 	g = Sequence("13", "green")
 	g.add(self.move(x,y,z,80))
-	info = send(cp.create_node(kind='execute', args='g.sequence'))
+	info = send(cp.create_node(kind='execute', args=g.sequence))
 	return info
         
             
@@ -452,14 +452,15 @@ class MyFarmware():
 	# Test goto function
 	self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
 	self.gohome()
-	self.vacuum()
+	#self.vacuum()
 	
 
 	# can not stop the vacuum
-	self.Write(10,0,0)
-	#sys.exit(0)
-	log("ddfgdgdgdg", message_type='info')
 	self.Write(10,1,0)
+	#sys.exit(0)
+	self.waiting(5000)
+	log("ddfgdgdgdg", message_type='info')
+	self.Write(10,0,0)
 	
 
 
