@@ -278,6 +278,7 @@ class Sequence:
 class MyFarmware():  
     coords = [0,0,0]
     TOKEN = ''
+    i=2
 	
     #coords bac semis
     coords_bac=[2000,1000,-410]
@@ -309,8 +310,9 @@ class MyFarmware():
     
     def waiting(time):
 	log("Waiting {} ms".format(time), message_type='debug')
-	send(cp.wait(milliseconds=time))
-        
+	info = send(cp.wait(milliseconds=time))
+        return info
+
     ##MOVEMENT
     def moveRel(self, distx, disty, distz, spd):
         """
@@ -433,12 +435,12 @@ class MyFarmware():
 	#Sequence0 vaccum on
 	v = Sequence("0", "green")
 	v.add(log("Vaccum on ", message_type='info'))
-	i=2
-	while i<3:
+	
+	while self.i<3:
 		v.add(self.waiting(5000))
 		v.add(self.Write(10,1,0))
 		v.add(self.waiting(5000))
-		i+=1
+		self.i+=1
 	v.add(self.Write(10,0,0))
 	send(cp.create_node(kind='execute', args=v.sequence))
 
