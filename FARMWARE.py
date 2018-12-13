@@ -308,7 +308,7 @@ class MyFarmware():
     def waterFall(self, mm): #<-- implement
         return 
     
-    def waiting(time):
+    def waiting(self,time):
 	log("Waiting {} ms".format(time), message_type='debug')
 	info = send(cp.wait(milliseconds=time))
         return info
