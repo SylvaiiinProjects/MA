@@ -456,10 +456,10 @@ class MyFarmware():
 	
 
 	# can not stop the vacuum
-	#self.Write(10,0,0)
+	self.Write(10,0,0)
 	#sys.exit(0)
-	#log("ddfgdgdgdg", message_type='info')
-	#self.Write(10,1,0)
+	log("ddfgdgdgdg", message_type='info')
+	self.Write(10,1,0)
 	
 
 
@@ -490,7 +490,7 @@ class MyFarmware():
         s = Sequence("1", "green")
 	s.add(log("First move.", message_type='info'))
         s.add(self.move(self.coords_bac[0], self.coords_bac[1], 0, 80))
-	s.add(self.moveRel(0,0,-410,80))
+	s.add(self.moveRel(0,0,-410,100))
 	s.add(self.moveRel(0,0,60,80))
 
 	# Loop if for each rows
