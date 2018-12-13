@@ -343,7 +343,7 @@ class MyFarmware():
 
     def Write(self, pin, val, m):
 	"""
-	   pin : int 10 for vaccum (0 up to 69)d
+	   pin : int 10 for vaccum (0 up to 69)
 	   val : 1 on / 0 off
 	   m   : 0 digital / 1 analog
 	"""
@@ -351,16 +351,35 @@ class MyFarmware():
 	info = cp._print_json((cp.write_pin(number=pin, value=val , mode=m)))
         return info
     
+    def vacuum(self):
+	#Sequence0 vaccum on
+	v = Sequence("0", "green")
+	v.add(log("Vaccum on ", message_type='info'))
+	v.add(self.waiting(500))
+	v.add(log("waiting ok", message_type='info'))
+	#While works
+	#while self.i<3:
+		
+	#	v.add(self.Write(10,1,0))
+	#	v.add(self.waiting(500))
+	#	self.i+=1
+	v.add(self.Write(10,1,0))	
+	send(cp.create_node(kind='execute', args=v.sequence))	
+
     def exec_seq(self, id):
 	info = send(cp.execute_sequence(sequence_id=id))
         return info
 
 
+    def gohome(self):
+	s2 = Sequence("2", "green")
+	s2.add(log("Go home ! ", message_type='info'))
+	s2.add(self.move(0,0,0,80))
+	send(cp.create_node(kind='execute', args=s2.sequence))
 
     def goto(self, x, y, z):
 	g = Sequence("13", "green")
 	g.add(self.move(x,y,z,80))
-	g.add(self.move(0, 0, 0, 100))
 	info = send(cp.create_node(kind='execute', args='g.sequence'))
 	return info
         
@@ -431,8 +450,12 @@ class MyFarmware():
         log("Farmware running...", message_type='info')
        
 	# Test goto function
-	#self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
+	self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
+	self.gohome()
+	self.vacuum()
+	
 
+	# can not stop the vacuum
 	#self.Write(10,0,0)
 	#sys.exit(0)
 	#log("ddfgdgdgdg", message_type='info')
@@ -440,19 +463,7 @@ class MyFarmware():
 	
 
 
-	#Sequence0 vaccum on
-	#v = Sequence("0", "green")
-	#v.add(log("Vaccum on ", message_type='info'))
-	#v.add(self.waiting(500))
-	#v.add(log("waiting ok", message_type='info'))
-	#While works
-	#while self.i<3:
-		
-	#	v.add(self.Write(10,1,0))
-	#	v.add(self.waiting(500))
-	#	self.i+=1
-	#v.add(self.Write(10,0,0))
-	#send(cp.create_node(kind='execute', args=v.sequence))
+	
 
 	#m = Sequence("33", "green")
 	#m.add(self.goto(self.coords1[0], self.coords1[1], self.coords1[2]))
@@ -467,8 +478,8 @@ class MyFarmware():
 	#Sequence planter tool from origine
 	p = Sequence("10","green")
 	p.add(log("Go get Planter !.", message_type='info'))
-        p.add(self.move(self.planter[0]-1, self.planter[1], 0, 90))
-	p.add(self.move(self.planter[0]-1, self.planter[1], self.planter[2], 90))
+        p.add(self.move(self.planter[0]+1, self.planter[1], 0, 90))
+	p.add(self.move(self.planter[0]+1, self.planter[1], self.planter[2], 90))
 	p.add(self.move(self.planter[0]-150, self.planter[1], self.planter[2], 90))
 	p.add(self.move(self.planter[0]-150, self.planter[1],0, 80))
 	send(cp.create_node(kind='execute', args=p.sequence))
@@ -480,12 +491,12 @@ class MyFarmware():
 	s.add(log("First move.", message_type='info'))
         s.add(self.move(self.coords_bac[0], self.coords_bac[1], 0, 80))
 	s.add(self.moveRel(0,0,-410,80))
-	s.add(self.moveRel(0,0,40,80))
+	s.add(self.moveRel(0,0,60,80))
 
 	# Loop if for each rows
 	for i in range(1,4):
 		s.add(self.move(self.coords_bac[0], self.coords_bac[1]-i*46, -350, 80))
-		s.add(self.moveRel(0,0,-40,80))
+		s.add(self.moveRel(0,0,-60,80))
 		s.add(self.moveRel(0,0,40,80))
 	
      	send(cp.create_node(kind='execute', args=s.sequence))
@@ -495,16 +506,16 @@ class MyFarmware():
 	b = Sequence("11", "green")
 	b.add(log("Put Planter back !.", message_type='info'))
         b.add(self.move(self.planter[0]-150, self.planter[1], self.planter[2], 80))
-	b.add(self.move(self.planter[0], self.planter[1], self.planter[2], 80))
+	b.add(self.move(self.planter[0], self.planter[1], self.planter[2]+1, 80))
 	#up to 0 to leave tool
 	b.add(self.move(self.planter[0], self.planter[1],0, 80))
 	send(cp.create_node(kind='execute', args=b.sequence))
 	
+
 	#Sequence2 home
-	s2 = Sequence("2", "green")
-	s2.add(log("Go home ! ", message_type='info'))
-	s2.add(self.move(0,0,0,80))
-	send(cp.create_node(kind='execute', args=s2.sequence))
+	self.gohome()
+	
+	
 	
 	#Sequence3
 	#s3 = Sequence("3", "green")
