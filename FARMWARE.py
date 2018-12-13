@@ -435,11 +435,12 @@ class MyFarmware():
 	#Sequence0 vaccum on
 	v = Sequence("0", "green")
 	v.add(log("Vaccum on ", message_type='info'))
-	v.add(self.waiting(5000))
+	v.add(self.waiting(500))
+	v.add(log("waiting ok", message_type='info'))
 	while self.i<3:
-		v.add(self.waiting(5000))
+		v.add(self.waiting(500))
 		v.add(self.Write(10,1,0))
-		v.add(self.waiting(5000))
+		v.add(self.waiting(500))
 		self.i+=1
 	v.add(self.Write(10,0,0))
 	send(cp.create_node(kind='execute', args=v.sequence))
