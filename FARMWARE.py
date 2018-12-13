@@ -306,7 +306,10 @@ class MyFarmware():
         
     def waterFall(self, mm): #<-- implement
         return 
-        
+    
+    def waiting(time):
+	log("Waiting {} ms".format(time), message_type='debug')
+	send(cp.wait(milliseconds=time))
         
     ##MOVEMENT
     def moveRel(self, distx, disty, distz, spd):
@@ -430,7 +433,11 @@ class MyFarmware():
 	#Sequence0 vaccum on
 	v = Sequence("0", "green")
 	v.add(log("Vaccum on ", message_type='info'))
-	v.add(self.Write(10,1,0))
+	i=2
+	while i<3:
+		v.add(self.Write(10,1,0))
+		v.add(self.wait(5000))
+		i+=1
 	v.add(self.Write(10,0,0))
 	send(cp.create_node(kind='execute', args=v.sequence))
 
