@@ -434,6 +434,7 @@ class MyFarmware():
 	self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
 
 	self.Write(10,1,0)
+	sys.exit(0)
 	self.Write(10,0,0)
 	
 
