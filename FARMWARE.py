@@ -452,7 +452,7 @@ class MyFarmware():
 	# Test goto function
 	self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
 	self.gohome()
-	#self.vacuum()
+	self.vacuum()
 	
 
 	# can not stop the vacuum
