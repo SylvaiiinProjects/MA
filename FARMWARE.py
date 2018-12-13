@@ -310,7 +310,7 @@ class MyFarmware():
     
     def waiting(self,time):
 	log("Waiting {} ms".format(time), message_type='debug')
-	info = send(cp.wait(milliseconds=time))
+	#info = send(cp.wait(milliseconds=time))
         return info
 
     ##MOVEMENT
@@ -438,7 +438,7 @@ class MyFarmware():
 	v.add(self.waiting(500))
 	v.add(log("waiting ok", message_type='info'))
 	while self.i<3:
-		v.add(self.waiting(500))
+		
 		v.add(self.Write(10,1,0))
 		v.add(self.waiting(500))
 		self.i+=1
