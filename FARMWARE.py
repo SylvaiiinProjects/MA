@@ -424,22 +424,29 @@ class MyFarmware():
 	log("Hello {}".format(self.input_username), message_type='info')
         log("Farmware running...", message_type='info')
        
-	# Test foto function
+	# Test goto function
 	self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
 
-	#Sequence0
+	#Sequence0 vaccum on
 	v = Sequence("0", "green")
 	v.add(log("Vaccum on ", message_type='info'))
-	v.add(self.Write(10,1,0))
-	v.add(self.moveRel(0,0,-100,90))
-	v.add(self.Write(10,0,0))
 	send(cp.create_node(kind='execute', args=v.sequence))
+
+	m = Sequence("33", "green")
+	m.add(self.goto(self.coords1[0], self.coords1[1], self.coords1[2]))
+	send(cp.create_node(kind='execute', args=m.sequence))
+
+	#Sequence vaccum off
+	of = Sequence("22", "green")
+	of.add(self.Write(10,0,0))
+	send(cp.create_node(kind='execute', args=of.sequence))
+
 
 	#Sequence planter tool from origine
 	p = Sequence("10","green")
 	p.add(log("Go get Planter !.", message_type='info'))
-        p.add(self.move(self.planter[0], self.planter[1], 0, 90))
-	p.add(self.move(self.planter[0], self.planter[1], self.planter[2], 90))
+        p.add(self.move(self.planter[0]-1, self.planter[1], 0, 90))
+	p.add(self.move(self.planter[0]-1, self.planter[1], self.planter[2], 90))
 	p.add(self.move(self.planter[0]-150, self.planter[1], self.planter[2], 90))
 	p.add(self.move(self.planter[0]-150, self.planter[1],0, 80))
 	send(cp.create_node(kind='execute', args=p.sequence))
