@@ -417,16 +417,16 @@ class MyFarmware():
         
             
     def getTool(self, x, y, z, iid):
-        if iid==1:
-		t = Sequence("110","green")
-		t.add(log("Go get Planter !.", message_type='info'))
-        	t.add(self.move(x+1, y, 0, 90))
-		t.add(self.move(x+1, y, z, 90))
-		t.add(self.move(x-150, y, z, 90))
-		t.add(self.move(x-150, y,0, 80))
-		info = send(cp.create_node(kind='execute', args=t.sequence))
+        if iid == 1:
+	   t = Sequence("110","green")
+           t.add(log("Go get Planter !.", message_type='info'))
+           t.add(self.move(x+1, y, 0, 90))
+	   t.add(self.move(x+1, y, z, 90))
+	   t.add(self.move(x-150, y, z, 90))
+	   t.add(self.move(x-150, y,0, 80))
+	   info = send(cp.create_node(kind='execute', args=t.sequence))
 	"""
-	elif iid==2:
+	elif iid == 2:
 		tss = Sequence("155","green")
 		tss.add(log("Go get Seeder !.", message_type='info'))
         	tss.add(self.move(self.seeder[0], self.seeder[1], -150, 90))
