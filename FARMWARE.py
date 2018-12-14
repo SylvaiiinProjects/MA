@@ -480,15 +480,7 @@ class MyFarmware():
 	self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
 	self.gohome()
 
-	self.water_on()
-	self.waiting(20000)
-	self.water_off()
-
-	self.water_on()
-	self.waiting(5000)
-	self.water_off()
-	
-	"""
+		
 	#m = Sequence("33", "green")
 	#m.add(self.goto(self.coords1[0], self.coords1[1], self.coords1[2]))
 	#send(cp.create_node(kind='execute', args=m.sequence))
@@ -647,7 +639,7 @@ class MyFarmware():
 	#send(cp.create_node(kind='execute', args=ss.sequence))
         #struct = Structure() pb..
         
-        """
+        
         ##TESTS
         
         #self.s.sendMail(0)
