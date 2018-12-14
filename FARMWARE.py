@@ -280,8 +280,11 @@ class MyFarmware():
     TOKEN = ''
     i=2
 	
-    #coords bac semis
+    #coords bac semis planter
     coords_bac=[2000,1000,-410]
+
+    #coords bac semis seeder
+    c=[1980,1000,-360]
 
     # coords pots
     coords1=[50,80,-30]
@@ -289,6 +292,8 @@ class MyFarmware():
 
     # coords tools
     planter=[2677,870,-370]
+    seeder=[2670,1075,-371]
+    seeds=[2650, 770,-320]
     tool1=[1820,45,-109]
 
     def input_env(self):
@@ -351,22 +356,23 @@ class MyFarmware():
 	info = send(cp.write_pin(number=pin, value=val , mode=m))
         return info
     
-    def vacuum(self):
-	#Sequence0 vaccum on
-	v = Sequence("0", "green")
-	v.add(log("Vaccum on ", message_type='info'))
-	v.add(self.waiting(5000))
-	v.add(log("waiting ok", message_type='info'))
-	#While works
-	#while self.i<3:
-		
-	#	v.add(self.Write(10,1,0))
-	#	v.add(self.waiting(500))
-	#	self.i+=1
-	v.add(self.Write(10,1,0))
-	v.add(self.waiting(5000))
-	v.add(self.Write(10,0,0))
-	send(cp.create_node(kind='execute', args=v.sequence))	
+    def vacuum_on(self):
+	#Sequence0 vaccum on 
+	on = Sequence("0", "green")
+	on.add(log("Vaccum on ", message_type='info'))
+	#on.add(self.waiting(5000))
+	#on.add(log("waiting ok", message_type='info'))
+	on.add(self.Write(10,1,0))
+	send(cp.create_node(kind='execute', args=on.sequence))
+
+    def vacuum_off(self):
+	#Sequence01 vaccum off 
+	off = Sequence("01", "green")
+	off.add(log("Vaccum off ", message_type='info'))
+	#off.add(self.waiting(5000))
+	#off.add(log("waiting ok", message_type='info'))
+	off.add(self.Write(10,0,0))
+	send(cp.create_node(kind='execute', args=off.sequence))		
 
     def exec_seq(self, id):
 	info = send(cp.execute_sequence(sequence_id=id))
@@ -454,17 +460,6 @@ class MyFarmware():
 	# Test goto function
 	self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
 	self.gohome()
-	self.vacuum()
-	
-
-	# can not stop the vacuum
-	#self.Write(10,1,0)
-	#sys.exit(0)
-	#self.waiting(5000)
-	log("ddfgdgdgdg", message_type='info')
-	#self.Write(10,0,0)
-	
-
 
 	
 
@@ -478,7 +473,7 @@ class MyFarmware():
 	#send(cp.create_node(kind='execute', args=of.sequence))
 
 
-	#Sequence planter tool from origine
+	#Sequence take planter tool out from origine
 	p = Sequence("10","green")
 	p.add(log("Go get Planter !.", message_type='info'))
         p.add(self.move(self.planter[0]+1, self.planter[1], 0, 90))
@@ -501,7 +496,6 @@ class MyFarmware():
 		s.add(self.move(self.coords_bac[0], self.coords_bac[1]-i*46, -350, 80))
 		s.add(self.moveRel(0,0,-60,80))
 		s.add(self.moveRel(0,0,40,80))
-	
      	send(cp.create_node(kind='execute', args=s.sequence))
 	#sys.exit(0) doesn't work
 
@@ -514,6 +508,42 @@ class MyFarmware():
 	b.add(self.move(self.planter[0], self.planter[1],0, 80))
 	send(cp.create_node(kind='execute', args=b.sequence))
 	
+	#Sequence take seeder tool out 
+	ts = Sequence("15","green")
+	ts.add(log("Go get Seeder !.", message_type='info'))
+        ts.add(self.move(self.seeder[0], self.seeder[1], 0, 90))
+	ts.add(self.move(self.seeder[0], self.seeder[1], self.seeder[2], 90))
+	ts.add(self.move(self.seeder[0]-150, self.seeder[1], self.seeder[2], 90))
+	ts.add(self.move(self.seeder[0]-150, self.seeder[1],self.seeder[2], 80))
+	send(cp.create_node(kind='execute', args=ts.sequence))
+
+	#Go above seeds
+	self.goto(self.seeder[0]-150, self.seeder[1],-200)
+	self.goto(self.seeds[0],self.seeds[1],-200)
+	self.goto(self.seeds[0],self.seeds[1],self.seeds[2])
+
+	#Vacuum
+	self.vacuum_on()
+	
+	#go to bac seeder
+	self.goto(self.c[0],self.c[1],-200)
+	self.goto(self.c[0],self.c[1],self.c[2])
+
+	#Vacuum
+	self.vacuum_off()
+	
+
+	#Put seeder tool back
+	ba = Sequence("11", "green")
+	ba.add(log("Put seeder back !.", message_type='info'))
+        ba.add(self.move(self.c[0],self.c[1],0, 80))
+	ba.add(self.move(self.seeder[0]-150, self.seeder[1],0, 80))
+	ba.add(self.move(self.seeder[0]-150, self.seeder[1],self.seeder[2], 80))
+	ba.add(self.move(self.seeder[0], self.seeder[1],self.seeder[2], 80))
+	#up to 0 to leave tool
+	ba.add(self.move(self.seeder[0], self.seeder[1],0, 80))
+	send(cp.create_node(kind='execute', args=ba.sequence))
+
 
 	#Sequence2 home
 	self.gohome()
