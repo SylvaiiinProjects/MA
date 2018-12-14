@@ -424,7 +424,7 @@ class MyFarmware():
 		t.add(self.move(self.tools[0][0]+1, self.tools[0][1], self.tools[0][2], 90))
 		t.add(self.move(self.tools[0][0]-150, self.tools[0][1], self.tools[0][2], 90))
 		t.add(self.move(self.tools[0][0]-150, self.tools[0][1],0, 80))
-		send(cp.create_node(kind='execute', args=t.sequence))
+		info = send(cp.create_node(kind='execute', args=t.sequence))
 	
 	elif id==2:
 		tss = Sequence("155","green")
@@ -433,7 +433,8 @@ class MyFarmware():
 		tss.add(self.move(self.seeder[0], self.seeder[1], self.seeder[2], 90))
 		tss.add(self.move(self.seeder[0]-150, self.seeder[1], self.seeder[2], 90))
 		tss.add(self.move(self.seeder[0]-150, self.seeder[1],self.seeder[2], 80))
-		send(cp.create_node(kind='execute', args=tss.sequence))
+		info = send(cp.create_node(kind='execute', args=tss.sequence))
+	return info
 
 
         
