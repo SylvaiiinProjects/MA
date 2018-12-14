@@ -291,7 +291,7 @@ class MyFarmware():
     coords2=[-50,-400,-30]
 
     # coords tools
-    planter=[2677,870,-370]
+    planter=[2679,870,-370]
     seeder=[2670,1075,-371]
     seeds=[2650, 770,-320]
     tool1=[1820,45,-109]
@@ -372,7 +372,26 @@ class MyFarmware():
 	#off.add(self.waiting(5000))
 	#off.add(log("waiting ok", message_type='info'))
 	off.add(self.Write(10,0,0))
-	send(cp.create_node(kind='execute', args=off.sequence))		
+	send(cp.create_node(kind='execute', args=off.sequence))	
+
+    def water_on(self):
+	#Sequence01 vaccum off 
+	won = Sequence("02", "green")
+	won.add(log("Water on ", message_type='info'))
+	#off.add(self.waiting(5000))
+	#off.add(log("waiting ok", message_type='info'))
+	won.add(self.Write(9,1,0))
+	send(cp.create_node(kind='execute', args=won.sequence))	
+
+    def water_off(self):
+	#Sequence01 vaccum off 
+	wof = Sequence("03", "green")
+	wof.add(log("Water off ", message_type='info'))
+	#off.add(self.waiting(5000))
+	#off.add(log("waiting ok", message_type='info'))
+	wof.add(self.Write(9,0,0))
+	send(cp.create_node(kind='execute', args=wof.sequence))	
+		
 
     def exec_seq(self, id):
 	info = send(cp.execute_sequence(sequence_id=id))
@@ -506,7 +525,7 @@ class MyFarmware():
         b.add(self.move(self.planter[0]-150, self.planter[1], self.planter[2], 80))
 	b.add(self.move(self.planter[0], self.planter[1], self.planter[2]+1, 80))
 	#up to 0 to leave tool
-	b.add(self.move(self.planter[0], self.planter[1],0, 80))
+	b.add(self.move(self.planter[0], self.planter[1],-150, 80))
 	send(cp.create_node(kind='execute', args=b.sequence))
 	
 	#Sequence take seeder tool out 
@@ -529,7 +548,7 @@ class MyFarmware():
 	self.goto(self.seeds[0],self.seeds[1],0)
 	
 	#go to bac seeder
-	self.goto(self.c[0],self.c[1],-200)
+	self.goto(self.c[0],self.c[1]-46,-200)
 	self.goto(self.c[0],self.c[1],self.c[2])
 
 	#Vacuum
@@ -556,7 +575,7 @@ class MyFarmware():
 	#Put seeder tool back
 	ba = Sequence("11", "green")
 	ba.add(log("Put seeder back !.", message_type='info'))
-        ba.add(self.move(self.c[0],self.c[1],0, 80))
+        ba.add(self.move(self.c[0],self.c[1]-46,0, 80))
 	ba.add(self.move(self.seeder[0]-150, self.seeder[1],0, 80))
 	ba.add(self.move(self.seeder[0]-150, self.seeder[1],self.seeder[2], 80))
 	ba.add(self.move(self.seeder[0], self.seeder[1],self.seeder[2], 80))
@@ -564,6 +583,14 @@ class MyFarmware():
 	ba.add(self.move(self.seeder[0], self.seeder[1],0, 80))
 	send(cp.create_node(kind='execute', args=ba.sequence))
 
+	#go to bac seeder
+	self.goto(self.c[0],self.c[1],-200)
+	self.goto(self.c[0],self.c[1],self.c[2])
+
+	#Water on
+	self.water_on()
+	self.waiting(2000)
+	self.water_off()
 
 	#Sequence2 home
 	self.gohome()
