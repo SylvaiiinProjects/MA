@@ -494,8 +494,9 @@ class MyFarmware():
 	# Loop if for each rows
 	for i in range(1,4):
 		s.add(self.move(self.coords_bac[0], self.coords_bac[1]-i*46, -350, 80))
-		s.add(self.moveRel(0,0,-60,80))
-		s.add(self.moveRel(0,0,40,80))
+		s.add(self.moveRel(0,0,-60,100))
+		s.add(self.moveRel(0,0,40,100))
+	s.add(self.moveRel(0,0,100,100))
      	send(cp.create_node(kind='execute', args=s.sequence))
 	#sys.exit(0) doesn't work
 
@@ -517,6 +518,7 @@ class MyFarmware():
 	ts.add(self.move(self.seeder[0]-150, self.seeder[1],self.seeder[2], 80))
 	send(cp.create_node(kind='execute', args=ts.sequence))
 
+	###
 	#Go above seeds
 	self.goto(self.seeder[0]-150, self.seeder[1],-200)
 	self.goto(self.seeds[0],self.seeds[1],-200)
@@ -524,10 +526,28 @@ class MyFarmware():
 
 	#Vacuum
 	self.vacuum_on()
+	self.goto(self.seeds[0],self.seeds[1],0)
 	
 	#go to bac seeder
 	self.goto(self.c[0],self.c[1],-200)
 	self.goto(self.c[0],self.c[1],self.c[2])
+
+	#Vacuum
+	self.vacuum_off()
+
+	#### Do loop if..
+	#Go above seeds
+	self.goto(self.c[0], self.c[1],0)
+	self.goto(self.seeds[0],self.seeds[1],-200)
+	self.goto(self.seeds[0],self.seeds[1],self.seeds[2])
+
+	#Vacuum
+	self.vacuum_on()
+	self.goto(self.seeds[0],self.seeds[1],0)
+	
+	#go to bac seeder
+	self.goto(self.c[0],self.c[1]-46,-200)
+	self.goto(self.c[0],self.c[1]-46,self.c[2])
 
 	#Vacuum
 	self.vacuum_off()
