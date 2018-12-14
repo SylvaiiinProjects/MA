@@ -502,10 +502,10 @@ class MyFarmware():
 	self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
 	self.gohome()
 
-	self.getTool(self.tools[0][0], self.tools[0][1], self.tools[0][2], self.tools[0][3])	
-	self.gohome()
+	#self.getTool(self.tools[0][0], self.tools[0][1], self.tools[0][2], self.tools[0][3])	
+	#self.gohome()
 
-	"""
+	
 	#Sequence take planter tool out from origine
 	p = Sequence("10","green")
 	p.add(log("Go get Planter !.", message_type='info'))
@@ -654,7 +654,6 @@ class MyFarmware():
 	#send(cp.create_node(kind='execute', args=ss.sequence))
         #struct = Structure() pb..
         
-	"""
         
         ##TESTS
         
