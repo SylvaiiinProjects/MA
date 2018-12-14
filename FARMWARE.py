@@ -279,7 +279,7 @@ class MyFarmware():
     coords = [0,0,0]
     TOKEN = ''
     
-    # List with coords and id tools
+    # List with coords and iid tools
 	"""
 	 tools=[[x1,y1,z1,id1],[x2,y2,z2,id2]]
 	"""
@@ -416,16 +416,16 @@ class MyFarmware():
 	return info
         
             
-    def getTool(self, iid):
+    def getTool(self, x, y, z, iid):
         if iid==1:
 		t = Sequence("110","green")
 		t.add(log("Go get Planter !.", message_type='info'))
-        	t.add(self.move(self.tools[0][0]+1, self.tools[0][1], 0, 90))
-		t.add(self.move(self.tools[0][0]+1, self.tools[0][1], self.tools[0][2], 90))
-		t.add(self.move(self.tools[0][0]-150, self.tools[0][1], self.tools[0][2], 90))
-		t.add(self.move(self.tools[0][0]-150, self.tools[0][1],0, 80))
+        	t.add(self.move(x+1, y, 0, 90))
+		t.add(self.move(x+1, y, z, 90))
+		t.add(self.move(x-150, y, z, 90))
+		t.add(self.move(x-150, y,0, 80))
 		info = send(cp.create_node(kind='execute', args=t.sequence))
-	
+	"""
 	elif iid==2:
 		tss = Sequence("155","green")
 		tss.add(log("Go get Seeder !.", message_type='info'))
@@ -433,7 +433,7 @@ class MyFarmware():
 		tss.add(self.move(self.seeder[0], self.seeder[1], self.seeder[2], 90))
 		tss.add(self.move(self.seeder[0]-150, self.seeder[1], self.seeder[2], 90))
 		tss.add(self.move(self.seeder[0]-150, self.seeder[1],self.seeder[2], 80))
-		info = send(cp.create_node(kind='execute', args=tss.sequence))
+		info = send(cp.create_node(kind='execute', args=tss.sequence))"""
 	return info
 
 
@@ -502,7 +502,7 @@ class MyFarmware():
 	self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
 	self.gohome()
 
-	self.getTool(self.tools[0][3])	
+	self.getTool(self.tools[0][0], self.tools[0][1], self.tools[0][2], self.tools[0][3])	
 	self.gohome()
 
 	"""
