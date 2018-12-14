@@ -418,7 +418,7 @@ class MyFarmware():
             
     def getTool(self, id):
         if id==1:
-		t = Sequence("10","green")
+		t = Sequence("110","green")
 		t.add(log("Go get Planter !.", message_type='info'))
         	t.add(self.move(self.tools[0][0]+1, self.tools[0][1], 0, 90))
 		t.add(self.move(self.tools[0][0]+1, self.tools[0][1], self.tools[0][2], 90))
@@ -427,13 +427,13 @@ class MyFarmware():
 		send(cp.create_node(kind='execute', args=t.sequence))
 	
 	elif id==2:
-		ts = Sequence("15","green")
-		ts.add(log("Go get Seeder !.", message_type='info'))
-        	ts.add(self.move(self.seeder[0], self.seeder[1], -150, 90))
-		ts.add(self.move(self.seeder[0], self.seeder[1], self.seeder[2], 90))
-		ts.add(self.move(self.seeder[0]-150, self.seeder[1], self.seeder[2], 90))
-		ts.add(self.move(self.seeder[0]-150, self.seeder[1],self.seeder[2], 80))
-		send(cp.create_node(kind='execute', args=ts.sequence))
+		tss = Sequence("155","green")
+		tss.add(log("Go get Seeder !.", message_type='info'))
+        	tss.add(self.move(self.seeder[0], self.seeder[1], -150, 90))
+		tss.add(self.move(self.seeder[0], self.seeder[1], self.seeder[2], 90))
+		tss.add(self.move(self.seeder[0]-150, self.seeder[1], self.seeder[2], 90))
+		tss.add(self.move(self.seeder[0]-150, self.seeder[1],self.seeder[2], 80))
+		send(cp.create_node(kind='execute', args=tss.sequence))
 
 
         
@@ -597,8 +597,8 @@ class MyFarmware():
 	send(cp.create_node(kind='execute', args=ba.sequence))
 
 	#go to bac seeder
-	self.goto(self.c[0],self.c[1],-200)
-	self.goto(self.c[0],self.c[1],self.c[2])
+	self.goto(self.c[0]-30,self.c[1]-20,-200)
+	self.goto(self.c[0]-30,self.c[1]-20,self.c[2])
 
 	#Water on
 	self.water_on()
