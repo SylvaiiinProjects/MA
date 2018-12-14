@@ -291,7 +291,7 @@ class MyFarmware():
     coords2=[-50,-400,-30]
 
     # coords tools
-    planter=[2679,870,-370]
+    planter=[2678,872,-370]
     seeder=[2670,1075,-371]
     seeds=[2650, 770,-320]
     tool1=[1820,45,-109]
@@ -480,8 +480,15 @@ class MyFarmware():
 	self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
 	self.gohome()
 
-	
+	self.water_on()
+	self.waiting(20000)
+	self.water_off()
 
+	self.water_on()
+	self.waiting(5000)
+	self.water_off()
+	
+"""
 	#m = Sequence("33", "green")
 	#m.add(self.goto(self.coords1[0], self.coords1[1], self.coords1[2]))
 	#send(cp.create_node(kind='execute', args=m.sequence))
@@ -531,7 +538,7 @@ class MyFarmware():
 	#Sequence take seeder tool out 
 	ts = Sequence("15","green")
 	ts.add(log("Go get Seeder !.", message_type='info'))
-        ts.add(self.move(self.seeder[0], self.seeder[1], 0, 90))
+        ts.add(self.move(self.seeder[0], self.seeder[1], -150, 90))
 	ts.add(self.move(self.seeder[0], self.seeder[1], self.seeder[2], 90))
 	ts.add(self.move(self.seeder[0]-150, self.seeder[1], self.seeder[2], 90))
 	ts.add(self.move(self.seeder[0]-150, self.seeder[1],self.seeder[2], 80))
@@ -640,7 +647,7 @@ class MyFarmware():
 	#send(cp.create_node(kind='execute', args=ss.sequence))
         #struct = Structure() pb..
         
-        
+        """
         ##TESTS
         
         #self.s.sendMail(0)
