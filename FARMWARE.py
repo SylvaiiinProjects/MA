@@ -283,7 +283,7 @@ class MyFarmware():
 	"""
 	 tools=[[x1,y1,z1,id1],[x2,y2,z2,id2]]
 	"""
-    tools=[[2678,872,-370,1], [2670,1075,-371,2]]
+    #=[[2678,872,-370,1], [2670,1075,-371,2]]
 	
     #coords bac semis planter
     coords_bac=[2000,1000,-410]
