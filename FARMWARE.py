@@ -278,7 +278,12 @@ class Sequence:
 class MyFarmware():  
     coords = [0,0,0]
     TOKEN = ''
-    i=2
+    
+    # List with coords and id tools
+	"""
+	 tools=[[x1,y1,z1,id1],[x2,y2,z2,id2]]
+	"""
+    tools=[[2678,872,-370,1], [2670,1075,-371,2]]
 	
     #coords bac semis planter
     coords_bac=[2000,1000,-410]
@@ -411,11 +416,26 @@ class MyFarmware():
 	return info
         
             
-    def getTool(self, tool):
-        l = self.s.toolList[tool]
-        self.goto(l[0] , l[1], l[2])
-        self.move(l[0] + 100, l[1], l[2], 50)
-        self.coords = l
+    def getTool(self, id):
+        if id==1:
+		t = Sequence("10","green")
+		t.add(log("Go get Planter !.", message_type='info'))
+        	t.add(self.move(self.tools[0][0]+1, self.tools[0][1], 0, 90))
+		t.add(self.move(self.tools[0][0]+1, self.tools[0][1], self.tools[0][2], 90))
+		t.add(self.move(self.tools[0][0]-150, self.tools[0][1], self.tools[0][2], 90))
+		t.add(self.move(self.tools[0][0]-150, self.tools[0][1],0, 80))
+		send(cp.create_node(kind='execute', args=t.sequence))
+	
+	elif id==2:
+		ts = Sequence("15","green")
+		ts.add(log("Go get Seeder !.", message_type='info'))
+        	ts.add(self.move(self.seeder[0], self.seeder[1], -150, 90))
+		ts.add(self.move(self.seeder[0], self.seeder[1], self.seeder[2], 90))
+		ts.add(self.move(self.seeder[0]-150, self.seeder[1], self.seeder[2], 90))
+		ts.add(self.move(self.seeder[0]-150, self.seeder[1],self.seeder[2], 80))
+		send(cp.create_node(kind='execute', args=ts.sequence))
+
+
         
     def putTool(self, tool):
         l = self.s.toolList[tool]
@@ -472,6 +492,7 @@ class MyFarmware():
               
                   
     ##START POINT
+
     def run(self):
 	log("Hello {}".format(self.input_username), message_type='info')
         log("Farmware running...", message_type='info')
@@ -480,17 +501,10 @@ class MyFarmware():
 	self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
 	self.gohome()
 
-		
-	#m = Sequence("33", "green")
-	#m.add(self.goto(self.coords1[0], self.coords1[1], self.coords1[2]))
-	#send(cp.create_node(kind='execute', args=m.sequence))
+	self.getTool(self.tools[0][3])	
+	self.gohome()
 
-	#Sequence vaccum off
-	#of = Sequence("22", "green")
-	#of.add(self.Write(10,0,0))
-	#send(cp.create_node(kind='execute', args=of.sequence))
-
-
+	"""
 	#Sequence take planter tool out from origine
 	p = Sequence("10","green")
 	p.add(log("Go get Planter !.", message_type='info'))
@@ -639,6 +653,7 @@ class MyFarmware():
 	#send(cp.create_node(kind='execute', args=ss.sequence))
         #struct = Structure() pb..
         
+	"""
         
         ##TESTS
         
