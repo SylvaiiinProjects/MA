@@ -412,7 +412,7 @@ class MyFarmware():
 	info = send(cp.create_node(kind='execute', args=g.sequence))
 	return info
         
-          
+        
     def getTool(self, x, y, z, iid):
         if iid == 1:
 	   t = Sequence("110","green")
@@ -499,8 +499,8 @@ class MyFarmware():
 	self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
 	self.gohome()
 
-	#self.getTool(self.list_tool[0][0], self.list_tool[0][1], self.list_tool[0][2], self.list_tool[0][3])	
-	#self.gohome()
+	self.getTool(self.list_tool[0][0], self.list_tool[0][1], self.list_tool[0][2], self.list_tool[0][3])	
+	self.gohome()
 
 	
 	#Sequence take planter tool out from origine
