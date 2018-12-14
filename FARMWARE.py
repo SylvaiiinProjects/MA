@@ -416,8 +416,8 @@ class MyFarmware():
 	return info
         
             
-    def getTool(self, id):
-        if id==1:
+    def getTool(self, iid):
+        if iid==1:
 		t = Sequence("110","green")
 		t.add(log("Go get Planter !.", message_type='info'))
         	t.add(self.move(self.tools[0][0]+1, self.tools[0][1], 0, 90))
@@ -426,7 +426,7 @@ class MyFarmware():
 		t.add(self.move(self.tools[0][0]-150, self.tools[0][1],0, 80))
 		info = send(cp.create_node(kind='execute', args=t.sequence))
 	
-	elif id==2:
+	elif iid==2:
 		tss = Sequence("155","green")
 		tss.add(log("Go get Seeder !.", message_type='info'))
         	tss.add(self.move(self.seeder[0], self.seeder[1], -150, 90))
