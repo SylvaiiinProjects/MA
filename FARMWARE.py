@@ -537,7 +537,8 @@ class MyFarmware():
 	self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
 	self.gohome()
 
-
+	self.Reading(63,1)
+	self.waiting(2000)
 	self.Reading(64,1)	
 
 	#Sequence take planter tool out 
