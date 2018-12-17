@@ -534,10 +534,10 @@ class MyFarmware():
        
 	# implement try : except : in case of network loss
 	# Test goto function
-	self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
-	self.gohome()
+	#self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
+	#self.gohome()
 
-	self.Reading(63,1)
+	self.Reading(63,0)
 	self.waiting(2000)
 	self.Reading(64,1)	
 
@@ -622,42 +622,6 @@ class MyFarmware():
 	
 	
 	
-	#Sequence3
-	#s3 = Sequence("3", "green")
-	#s3.add(self.moveRel(0,0,-180,80))
-	#s3.add(self.moveRel(0, 0, 180, 80))
-	#send(cp.create_node(kind='execute', args=s3.sequence))
-
-	
-	#Sequence4
-	#s4 = Sequence("4", "green")
-	#s4.add(log("Try to move to pot 2", message_type='info'))
-	#s4.add(self.move(self.coords2[0],self.coords2[1],180,80))
-	#s4.add(self.moveRel(0,0,-180,80))
-	#s4.add(self.moveRel(0, 0, 180, 80))
-	#send(cp.create_node(kind='execute', args=s4.sequence))
-
-	#Sequence6
-	#s6 = Sequence("6", "green")
-	#s6.add(self.move(-700,-600,50,80))
-	#send(cp.create_node(kind='execute', args=s6.sequence))
-	
-
-	#Sequence7
-	#s7 = Sequence("7", "green")
-	#s7.add(log("Get a tool", message_type='info'))
-	#s7.add(self.moveRel(0, 0, 130, 80))
-	#s7.add(self.move(self.tool1[0],self.tool1[1],130,80))
-	#s7.add(self.move(self.tool1[0],self.tool1[1],self.tool1[2],50))
-	#s7.add(self.move(self.tool1[0]-150,self.tool1[1],self.tool1[2],50))
-	#s7.add(self.moveRel(0, 0, 130, 80))
-	#s7.add(self.move(self.coords2[0],self.coords2[1],180,80))
-	#send(cp.create_node(kind='execute', args=s7.sequence))
-
-
-       
-        
-        
         ##TESTS
         
         #self.s.sendMail(0)
