@@ -276,13 +276,16 @@ class Sequence:
     """ Define the origin is the most important """
 
 class MyFarmware():  
-    coords = [0,0,0]
+    
     TOKEN = ''
     
-    """1 : planter  / 2 : seeder"""
+    """
+	[x,y,z,iid]	
+	1 : planter  / 2 : seeder
+    """
     list_tool=[[2676,871,-370,1], [2670,1075,-371,2]]
 	
-    #coords bac semis planter
+    #coords bac semis for planter tool
     coords_bac=[2000,1000,-410]
 
     #coords bac semis for seeder tool (offset of tool)
@@ -296,7 +299,7 @@ class MyFarmware():
     planter=[2676,871,-370]
     seeder=[2670,1075,-371]
     seeds=[2650, 770,-320]
-    tool1=[1820,45,-109]
+  
 
     def input_env(self):
 	self.input_username = os.environ.get("jhempbot"+"_username", "nobodyyy")
@@ -403,7 +406,7 @@ class MyFarmware():
 
 	#Sequence redaing pin value	
 	ss = Sequence("40", "green")
-        ss.add(log("Read pin 64.", message_type='info'))
+        ss.add(log("Read pin {}.".format(pin), message_type='info'))
 	ss.add(self.Read(pin, signal,'Soil'))
 	ss.add(log("Data loaded.", message_type='info'))
         send(cp.create_node(kind='execute', args=ss.sequence))	
@@ -432,19 +435,19 @@ class MyFarmware():
         if iid == 1:
 	   t = Sequence("110","green")
            t.add(log("Go get Planter !.", message_type='info'))
-           t.add(self.move(list_Tool[0][0],list_Tool[0][1],0, 90))
-	   t.add(self.move(list_Tool[0][0],list_Tool[0][1], list_Tool[0][2], 90))
-	   t.add(self.move(list_Tool[0][0]-150, list_Tool[0][1], list_Tool[0][2], 90))
-	   t.add(self.move(list_Tool[0][0]-150, list_Tool[0][1],0, 80))
+           t.add(self.move(self.list_Tool[0][0],self.list_Tool[0][1],0, 90))
+	   t.add(self.move(self.list_Tool[0][0],self.list_Tool[0][1], list_Tool[0][2], 90))
+	   t.add(self.move(self.list_Tool[0][0]-150, self.list_Tool[0][1], list_Tool[0][2], 90))
+	   t.add(self.move(self.list_Tool[0][0]-150, self.list_Tool[0][1],0, 80))
 	   info = send(cp.create_node(kind='execute', args=t.sequence))
 	
 	elif iid == 2:
 		tss = Sequence("155","green")
 		tss.add(log("Go get Seeder !.", message_type='info'))
-        	tss.add(self.move(list_Tool[1][0], list_Tool[1][1], list_Tool[1][2]-150, 90))
-		tss.add(self.move(list_Tool[1][0], list_Tool[1][1], list_Tool[1][2], 90))
-		tss.add(self.move(list_Tool[1][0]-150, list_Tool[1][1],list_Tool[1][2] , 90))
-		tss.add(self.move(list_Tool[0][0]-150, list_Tool[1][1],list_Tool[1][2], 80))
+        	tss.add(self.move(self.list_Tool[1][0], self.list_Tool[1][1], self.list_Tool[1][2]-150, 90))
+		tss.add(self.move(self.list_Tool[1][0], self.list_Tool[1][1], self.list_Tool[1][2], 90))
+		tss.add(self.move(self.list_Tool[1][0]-150, self.list_Tool[1][1],self.list_Tool[1][2] , 90))
+		tss.add(self.move(self.list_Tool[0][0]-150, self.list_Tool[1][1],self.list_Tool[1][2], 80))
 		info = send(cp.create_node(kind='execute', args=tss.sequence))
 	return info
       
