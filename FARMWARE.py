@@ -283,7 +283,7 @@ class MyFarmware():
 	[x,y,z,iid]	
 	1 : planter  / 2 : seeder
     """
-    list_Tool=[[2676,871,-370,1], [2670,1075,-371,2]]
+    list_Tool=[[2676,873,-370,1], [2670,1075,-371,2]]
 	
     #coords bac semis for planter tool
     coords_bac=[2000,1000,-410]
@@ -437,7 +437,7 @@ class MyFarmware():
            t.add(log("Go get Planter !.", message_type='info'))
            t.add(self.move(self.list_Tool[0][0],self.list_Tool[0][1],0, 90))
 	   t.add(self.move(self.list_Tool[0][0],self.list_Tool[0][1], self.list_Tool[0][2], 90))
-	   t.add(self.move(self.list_Tool[0][0]-150, self.list_Tool[0][1], list_Tool[0][2], 90))
+	   t.add(self.move(self.list_Tool[0][0]-150, self.list_Tool[0][1], self.list_Tool[0][2], 90))
 	   t.add(self.move(self.list_Tool[0][0]-150, self.list_Tool[0][1],0, 80))
 	   info = send(cp.create_node(kind='execute', args=t.sequence))
 	
