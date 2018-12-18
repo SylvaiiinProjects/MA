@@ -535,15 +535,15 @@ class MyFarmware():
 	# implement try : except : in case of network loss
 	#self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
 	#self.gohome()
-
-	self.Reading(63,0)
-	self.waiting(2000)
-	self.Reading(64,1)	
+	try: 
+		self.Reading(63,0)
+		self.waiting(2000)
+		self.Reading(64,1)	
+	except Exception as error:
+		log("Error Reading", message_type='info')
 
 	#Sequence take planter tool out 
 	self.getTool(self.list_Tool[0][3])	
-	self.gohome()
-		
 	
 	# Sequence1 ligne bac semis avec outil planter
         s = Sequence("1", "green")
@@ -562,10 +562,10 @@ class MyFarmware():
 	#sys.exit(0) doesn't work
 
 	#Put planter tool back
-	self.putTool(1)
+	self.putTool(self.list_Tool[0][3])
 
 	#Sequence take seeder tool out 
-	self.putTool(2)
+	self.getTool(self.list_Tool[1][3])
 	
 	###
 	#Go above seeds
