@@ -283,7 +283,7 @@ class MyFarmware():
 	[x,y,z,iid]	
 	1 : planter  / 2 : seeder
     """
-    list_tool=[[2676,871,-370,1], [2670,1075,-371,2]]
+    list_Tool=[[2676,871,-370,1], [2670,1075,-371,2]]
 	
     #coords bac semis for planter tool
     coords_bac=[2000,1000,-410]
@@ -533,7 +533,6 @@ class MyFarmware():
         log("Farmware running...", message_type='info')
        
 	# implement try : except : in case of network loss
-	# Test goto function
 	#self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
 	#self.gohome()
 
@@ -542,9 +541,8 @@ class MyFarmware():
 	self.Reading(64,1)	
 
 	#Sequence take planter tool out 
-	self.getTool(self.list_tool[0][3])	
+	self.getTool(self.list_Tool[0][3])	
 	self.gohome()
-
 		
 	
 	# Sequence1 ligne bac semis avec outil planter
