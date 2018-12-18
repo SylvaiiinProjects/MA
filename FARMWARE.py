@@ -296,7 +296,7 @@ class MyFarmware():
     coords2=[-50,-400,-30]
 
     # coords tools
-    planter=[2676,871,-370]
+    planter=[2676,873,-370]
     seeder=[2670,1075,-371]
     seeds=[2650, 770,-320]
   
@@ -456,7 +456,7 @@ class MyFarmware():
     def putTool(self, iid):
 
 	#Sequence put tool back
-	if idd == 1:
+	if iid == 1:
 		b = Sequence("11", "green")
 		b.add(log("Put Planter back !.", message_type='info'))
         	b.add(self.move(self.planter[0]-150, self.planter[1], self.planter[2], 80))
