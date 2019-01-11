@@ -1,13 +1,13 @@
-{
-     "package": "farmbot",
+﻿{
+     "package": "MA",
      "language": "python",
      "author": "Sylvain Vaugon & Ciarán Hagen",
      "description": "Automate farmbot processes",
-     "version": "1.6.1",
+     "version": "1.6.2",
      "min_os_version_major": 6,
-     "url": "https://raw.githubusercontent.com/CiaranHagen/farmbot/master/manifest.json",
-     "zip": "https://github.com/CiaranHagen/farmbot/archive/master.zip",
+     "url": "https://raw.githubusercontent.com/SylvaiiinProjects/MA/master/manifest.json",
+     "zip": "https://github.com/SylvaiiinProjects/MA/archive/master.zip",
      "executable": "python",
-     "args": ["farmbot-master/launch.py"],
+     "args": ["MA-master/launch.py"],
      "config": []
 }
