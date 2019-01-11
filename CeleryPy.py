@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 """Celery Py.
+
 Python wrappers for FarmBot Celery Script JSON nodes.
+
 rdegosse - ADD From Original CeleryScript
 return ret in wrapper function
 add config_update
@@ -22,6 +24,7 @@ def _print_json(function):
     @wraps(function)
     def wrapper(*args, **kwargs):
         """Send Celery Script or return the JSON string.
+
         Celery Script is sent by sending an HTTP POST request to /celery_script
         using the url in the `FARMWARE_URL` environment variable.
         """
@@ -100,6 +103,7 @@ def _coordinate_node(x_coord, y_coord, z_coord):
 @_print_json
 def add_point(point_x, point_y, point_z, point_r):
     """Celery Script to add a point to the database.
+
     Kind:
         add_point
     Arguments:
@@ -124,6 +128,7 @@ def add_point(point_x, point_y, point_z, point_r):
 @_print_json
 def set_user_env(label, value):
     """Celery Script to set an environment variable.
+
     Kind:
         set_user_env
     Body:
@@ -141,6 +146,7 @@ def set_user_env(label, value):
 #@_print_json
 def move_absolute(location, offset, speed):
     """Celery Script to move to a location.
+
     Kind:
         move_absolute
     Arguments:
@@ -170,6 +176,7 @@ def move_absolute(location, offset, speed):
 #@_print_json
 def move_relative(distance=(0, 0, 0), speed=800):
     """Celery Script to move relative to the current location.
+
     Kind:
         move_relative
     Arguments:
@@ -187,6 +194,7 @@ def move_relative(distance=(0, 0, 0), speed=800):
 @_print_json
 def data_update(endpoint, ids_=None):
     """Celery Script to signal that a sync is required.
+
     Kind:
         data_update
     Args:
@@ -218,6 +226,7 @@ def data_update(endpoint, ids_=None):
 @_print_json
 def send_message(message='Hello World!', message_type='success', channel=None):
     """Celery Script to send a message.
+
     Kind:
         send_message
     Arguments:
@@ -247,6 +256,7 @@ def send_message(message='Hello World!', message_type='success', channel=None):
 @_print_json
 def find_home(axis='all', speed=100):
     """Find home.
+
     Kind:
         find_home
     Arguments:
@@ -263,6 +273,7 @@ def find_home(axis='all', speed=100):
 @_print_json
 def if_statement(lhs='x', op='is', rhs=0, _then=None, _else=None):
     """Celery Script if statement.
+
     Kind:
         _if
     Arguments:
@@ -297,6 +308,7 @@ def if_statement(lhs='x', op='is', rhs=0, _then=None, _else=None):
 #@_print_json
 def write_pin(number=0, value=0, mode=0):
     """Celery Script to write a value to a pin.
+
     Kind:
         write_pin
     Arguments:
@@ -315,6 +327,7 @@ def write_pin(number=0, value=0, mode=0):
 #@_print_json
 def read_pin(number=0, mode=0, label='---'):
     """Celery Script to read the value of a pin.
+
     Kind:
         read_pin
     Arguments:
@@ -333,6 +346,7 @@ def read_pin(number=0, mode=0, label='---'):
 @_print_json
 def execute_sequence(sequence_id=0):
     """Celery Script to execute a sequence.
+
     Kind:
         execute
     Arguments:
@@ -347,6 +361,7 @@ def execute_sequence(sequence_id=0):
 @_print_json
 def execute_script(label):
     """Celery Script to execute a farmware.
+
     Kind:
         execute_script
     Arguments:
@@ -361,6 +376,7 @@ def execute_script(label):
 @_print_json
 def take_photo():
     """Celery Script to take a photo.
+
     Kind:
         take_photo
     Arguments:
@@ -374,6 +390,7 @@ def take_photo():
 #@_print_json
 def wait(milliseconds=0):
     """Celery Script to wait.
+
     Kind:
         wait
     Arguments:
@@ -387,6 +404,7 @@ def wait(milliseconds=0):
 @_print_json
 def config_update(config_dict,package="arduino_firmware"):
     """Celery Script to change mcu_params.
+
     Kind:
         config_update
     Args:

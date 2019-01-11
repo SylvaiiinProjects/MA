@@ -8,13 +8,16 @@ import CeleryPy as cp
 ##List of functions and classes for ease of use
 """
 classes:
+
 PlantType(name, lightNeeded, growthTimeS, growthTimeP, growthTimeF)
 Plant(kind, pot)
 Pot(region, posx, posy, posz)
 Region(ident, gs, position)
 Structure()
 ___________________________________________________________________
+
 parameter lists of Structure:
+
 plantTypeList = plant type repository for accessing data for growth needs
 waterList = [time]                --> when to water which pot
 repotList = dict[time] = [Plant]  --> when to repot a certain plant
@@ -22,7 +25,9 @@ plantList = current plants
 potList = a list of pots. This is useful for watering.
 regionList = a list of the regions... for specific tasks
 ___________________________________________________________________
+
 methods of Structure:
+
 currDate()
 currTime()
 uWaterList(step) --> step = interval between water checks
@@ -288,4 +293,24 @@ class Structure():
             subject = "Some pots need new peat."
         else:
             textfile = "./errormsg.txt"
-	    subject = "An error occurred."
+            subject = "An error occurred."
+ 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

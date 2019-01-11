@@ -1,24 +1,25 @@
-import time, os
+import time, os, json, requests
 import pickle
-import requests
-import sys
 import xml.etree.ElementTree
 from farmware_tools import log
 from farmware_tools import send_celery_script as send
 import CeleryPy as cp
-
-
+from os.path import dirname, join
 
 ##List of functions and classes for ease of use
+
 """
 SECONDARY FUNCTION CLASSES:
+
 PlantType(name, lightNeeded, growthTimeS, growthTimeP, growthTimeF)
 Plant(kind, pot)
 Pot(region, posx, posy, posz)
 Region(ident, gs, position)
 Structure()
 ___________________________________________________________________
+
 parameter lists of Structure:
+
 plantTypeList = plant type repository for accessing data for growth needs
 waterList = [time]                --> when to water which pot
 repotList = dict[time] = [Plant]  --> when to repot a certain plant
@@ -26,7 +27,9 @@ plantList = current plants
 potList = a list of pots. This is useful for watering.
 regionList = a list of the regions... for specific tasks
 ___________________________________________________________________
+
 methods of Structure:
+
 currDate()
 currTime()
 uWaterList(step) --> step = interval between water checks
@@ -39,7 +42,7 @@ sendMail(kind) --> kind defines which message to send
 
 ##CLASSES
 class PlantType():
-    def __init__(self, name, lightNeeded, growthTimeS, growthTimeP, growthTimeF):
+    def __init__(self, name, hole, growthTimeS, growthTimeP, growthTimeF, seedx, seedy, seedz):
         """
         name : string
         lightNeeded : int (lumen)
@@ -48,11 +51,14 @@ class PlantType():
         growthTimeP : int (days)
         growthTimeF : int (days)
         """
+        self.hole = hole
         self.name = name
-        self.lightNeeded = lightNeeded
         self.growthTime0 = growthTimeS
         self.growthTime1 = growthTimeP
         self.growthTime2 = growthTimeF
+        self.x = seedx
+        self.y = seedy
+        self.z = seedz
         
 class Plant():
     growthStage = 0
@@ -84,11 +90,12 @@ class Pot():
         """
         self.region = region
         self.ident = ident
-        self.point = cp.add_point(posx, posy, posz, 1)
-    
-
+        self.x = posx
+        self.y = posy
+        self.z = posz
+        
 class Region():
-    def __init__(self, ident, gs, position):
+    def __init__(self, ident, gs, position, xw, yw, zw):
         """
         gs : int
         position : ((<x1>,<y1>),(<x2>,<y2>))
@@ -97,6 +104,9 @@ class Region():
         self.growthStage = gs
         self.position = position
         self.ident = ident
+        self.xWater = xw
+        self.yWater = yw
+        self.zWater = zw
 
 
 class Structure():
@@ -109,21 +119,16 @@ class Structure():
     plantList = []                  #current plants
     potList = []                    #a list of pots. This is useful for watering.
     regionList = {}                 #a list of the regions... for specific tasks
-    toolList = {"water":[0,0,0], "seeder":[0,0,0], "holer":[0,0,0], "waterSensor":[0,0,0]}
+    toolList = {"seeder":[0,0,0], "planter":[0,0,0], "soilSensor":[0,0,0]}
 
     def __init__(self):
-        log("Init - 0 --> structure", message_type='info')
-        log("Yes I can!", message_type='info')
         self.initPlantTypes()
-        log("Init - 1 --> structure", message_type='info')
         self.initFarmLayout()
-        log("Init - 2 --> structure", message_type='info')
         self.uWaterList(2)
-        log("Init - 3 --> structure", message_type='info')
         self.loadPlants()
-        log("Init - 4 --> structure", message_type='info')
+        self.loadPots()
         self.uRepotList()
-        log("Init - 5 --> structure", message_type='info')
+        self.initTools()
         
     ##TIME AND DATE FUNCTIONS
     def currDate(self):
@@ -168,7 +173,11 @@ class Structure():
         
     ##INITIALIZATION FUNCTIONS
     def initFarmLayout(self):
-        e = xml.etree.ElementTree.parse('./potLayout.xml').getroot()
+        filer = join(dirname(__file__), 'potLayout.xml')
+        try:
+            e = xml.etree.ElementTree.parse(filer).getroot()
+        except Exception as error:
+            log(repr(error))
         log("Accessed potLayout.xml", message_type='struct')
         for region in e:
             #init regions
@@ -178,8 +187,12 @@ class Structure():
             y2 = int(region.attrib["y2"])
             gs = int(region.attrib["gs"])
             ident = int(region.attrib["id"])
+            xw = int(region.attrib["xw"])
+            yw = int(region.attrib["yw"])
+            zw = int(region.attrib["zw"])
             
-            self.regionList[region.attrib["id"]] = Region(ident, gs, ((x1, y1), (x2, y2)))
+            self.regionList[region.attrib["id"]] = Region(ident, gs, ((x1, y1), (x2, y2)), xw, yw, zw)
+            self.waterAccessList.append([xw, yw, zw])
             
             if region.attrib["gs"] == "0":
                 #init bacs in region 0
@@ -192,9 +205,9 @@ class Structure():
                     border = int(bac.attrib["border"])
                     dist = int(bac.attrib["dist"])
                     
-                    for i in range(x1 + border, x2 - border + 1, dist):
-                        for j in range(y1 + border, y2 - border + 1, dist):
-                            pot = Pot(self.regionList[region.attrib["id"]], i, j, z)
+                    for i in range(x1 + border, x2 - border, dist):
+                        for j in range(y1 + border, y2 - border, dist):
+                            pot = Pot(region.attrib["id"] + "," + str(i) + "," + str(j), self.regionList[region.attrib["id"]], i, j, z)
                             self.potList.append(pot)
                             
             else:
@@ -205,41 +218,99 @@ class Structure():
         log("Loaded pot layout.", message_type='info')
 
     def initPlantTypes(self):
-        log("Present o)", message_type='info')
-        e = xml.etree.ElementTree.parse('./plantTypes.xml').getroot()
+        filer = join(dirname(__file__), 'plantTypes.xml')
+        try:
+            e = xml.etree.ElementTree.parse(filer).getroot()
+        except Exception as error:
+            log(repr(error))
         log("Accessed plantTypes.xml", message_type='info')
         for plantType in e:
             name = plantType.attrib["name"]
-            lightNeeded = int(plantType.attrib["lightNeeded"])
+            if int(plantType.attrib["hole"]) == 1:
+                hole = True
+            else:
+                hole = False
             gt0 = int(plantType.attrib["gt0"])
             gt1 = int(plantType.attrib["gt1"])        
-            gt2 = int(plantType.attrib["gt2"])     
+            gt2 = int(plantType.attrib["gt2"]) 
+            seedx = int(plantType.attrib["x"])
+            seedy = int(plantType.attrib["y"])
+            seedz  = int(plantType.attrib["z"])
                
-            self.plantTypeList.append(PlantType(name, lightNeeded, gt0, gt1, gt2))
+               
+            self.plantTypeList.append(PlantType(name, hole, gt0, gt1, gt2, seedx, seedy, seedz))
         log("Loaded plant types.", message_type='info')
            
+    def initTools(self):
+        filer = join(dirname(__file__), 'tools.xml')
+        try:
+            e = xml.etree.ElementTree.parse(filer).getroot()
+        except Exception as error:
+            log(repr(error))
+        log("Accessed tools.xml", message_type='info')
+        for tool in e:
+            ident = tool.attrib["ident"]
+            pos = [int(tool.attrib["x"]),int(tool.attrib["y"]),int(tool.attrib["z"])]   
+               
+            self.toolList[ident] = pos
+        log("Loaded plant types.", message_type='info')
+        
     def savePlants(self):
-        log("Saving plant objects.", message_type='info')
-        for plant in self.plantList:
-            f = open("./plants/" + plant.id + ".txt" , "wb")
-            pickle.dump(plant, f)
-            f.close()
+        try:
+            for plant in self.plantList:
+                fname = plant.id + ".txt"
+                filer = join(dirname(__file__), 'plants', fname)
+                f = open(filer, "wb")
+                pickle.dump(plant, f)
+                f.close()
+        except Exception as error:
+            log(repr(error))
         log("Saved plant objects.", message_type='info')
             
     def loadPlants(self):
-        log("Loading plant objects.", message_type='info')
-        for file in os.listdir("./plants"):
-            if file != "save.txt":
-                if file.endswith(".txt"):
-                    f = open("./plants/" + file, "rb")
-                    plant = pickle.Unpickler(f).load()
-                    self.plantList.append(plant)
-                    f.close()
+        log("Loading plants.", message_type='info')
+        try:
+            for file in os.listdir(join(dirname(__file__), 'plants')):
+                if file != "save.txt":
+                    if file.endswith(".txt"):
+                        f = open("./plants/" + file, "rb")
+                        plant = pickle.Unpickler(f).load()
+                        self.plantList.append(plant)
+                        f.close()
+        except Exception as error:
+            log(repr(error))
         log("Loaded plant objects.", message_type='info')
+        
+    def savePots(self):
+        try:
+            for pot in self.potList:
+                fname = pot.ident + ".txt"
+                filer = join(dirname(__file__), 'pots', fname)
+                f = open(filer, "wb")
+                pickle.dump(pot, f)
+                f.close()
+        except Exception as error:
+            log(repr(error))
+        log("Saved pot objects.", message_type='info')
+            
+    def loadPots(self):
+        log("Loading pots.", message_type='info')
+        try:
+            for file in os.listdir(join(dirname(__file__), 'pots')):
+                if file != "save.txt":
+                    if file.endswith(".txt"):
+                        f = open("./pots/" + file, "rb")
+                        pot = pickle.Unpickler(f).load()
+                        self.potList.append(pot)
+                        f.close()
+        except Exception as error:
+            log(repr(error))
+        log("Loaded pot objects.", message_type='info')
         
     ##SEND MAIL FUNCTION(S)
     def sendMail(self, kind):
         """
+        NOT FUNCTIONAL!!!!!!!
         Send a mail to the agriculturist, informing hime of 
             0 : Plants that are ready to be moved
             1 : Empty pot spots
@@ -258,7 +329,8 @@ class Structure():
         else:
             textfile = "./errormsg.txt"
             subject = "An error occurred."
-            
+  
+# One of the most important class of the Farmware          
 class Sequence:
     def __init__(self, name='New Sequence', color='gray'):
         self.sequence = {
@@ -272,57 +344,92 @@ class Sequence:
 ##=================================================================##
 ##===                MAIN PART OF THE PROGRAM                   ===##
 ##=================================================================##
-
-    """ Define the origin is the most important """
-
+    
 class MyFarmware():  
-    
+    coords = [0,0,0]
     TOKEN = ''
-    
-    """
-	[x,y,z,iid]	
-	1 : planter  / 2 : seeder
-    """
-    list_Tool=[[2676,873,-370,1], [2670,1075,-371,2]]
-	
-    #coords bac semis for planter tool
-    coords_bac=[2000,1000,-410]
-
-    #coords bac semis for seeder tool (offset of tool)
-    c=[1980,1000,-360]
-
-    # coords pots
-    coords1=[50,80,-30]
-    coords2=[-50,-400,-30]
-
-    # coords tools
-    planter=[2676,873,-370]
-    seeder=[2670,1075,-371]
-    seeds=[2650, 770,-320]
-  
-
-    def input_env(self):
-	self.input_username = os.environ.get("jhempbot"+"_username", "nobodyyy")
-
     def __init__(self,farmwarename):
         self.farmwarename = farmwarename
-	self.input_env()
-	
-    
+
     ##FUNCTION CONTROL
-    def waterSensor(self):
-        water = False
-        water = True    #<-- change to check soil sensor...
-        return water
+    def read(self, pin, mode, label):
+        """ pin : int 64 soil sensor
+            mode : 0 digital 1 analog
+            label : description str
+        """
+        try:
+            info = send(cp.read_pin(number=pin, mode=mode, label = label))
+            return info
+        except Exception as error:
+            log("Read --> " + repr(error))
         
+    def reading(self, pin, signal ):
+        """
+            pin : int pin number
+            signal : 1 analog   /   0 digital
+        """
+
+        #Sequence reading pin value    
+        ss = Sequence("40", "green")
+        ss.add(log("Read pin {}.".format(pin), message_type='info'))
+        ss.add(self.read(pin, signal,'Soil'))
+        ss.add(log("Sensor read.", message_type='info'))
+        send(cp.create_node(kind='execute', args=ss.sequence))
+       
+    def waterSensor(self):
+        self.reading(63,0)
+        self.waiting(2000)
+        self.reading(64,1)
+        
+        headers = {'Authorization': 'bearer {}'.format(os.environ['FARMWARE_TOKEN']), 'content-type': "application/json"}
+
+        response = requests.get(os.environ['FARMWARE_URL'] + 'api/v1/bot/state', headers=headers)
+
+        bot_state = response.json()
+        value = bot_state['pins']['64']['value']
+        log(str(value), message_type='info')
+        return (value > 400)
+   
     def waterFall(self, mm): #<-- implement
-        return 
-    
-    def waiting(self,time):
-	log("Waiting {} ms".format(time), message_type='debug')
-	info = send(cp.wait(milliseconds=time))
+        try:
+            self.water_on()
+            self.waiting(mm*100)
+            self.water_off()
+        except Exception as error:
+            log("Water --> " + repr(error))
+    def Write(self, pin, val, m):
+        """
+           pin : int 10 for vaccum (0 up to 69)
+           val : 1 on / 0 off
+           m   : 0 digital / 1 analog
+        """
+        info = send(cp.write_pin(number=pin, value=val , mode=m))
         return info
 
+    def vacuum_on(self):
+        on = Sequence("0", "green")
+        on.add(log("Vaccum on ", message_type='info'))
+        on.add(self.Write(10,1,0))
+        send(cp.create_node(kind='execute', args=on.sequence))
+
+    def vacuum_off(self):
+        off = Sequence("01", "green")
+        off.add(log("Vaccum off ", message_type='info'))
+        off.add(self.Write(10,0,0))
+        send(cp.create_node(kind='execute', args=off.sequence))    
+
+    def water_on(self):
+        won = Sequence("02", "green")
+        won.add(self.Write(9,1,0))
+        won.add(log("Water on ", message_type='info'))
+        send(cp.create_node(kind='execute', args=won.sequence))    
+
+    def water_off(self):
+        wof = Sequence("03", "green")
+        wof.add(self.Write(9,0,0))
+        wof.add(log("Water off ", message_type='info'))
+        send(cp.create_node(kind='execute', args=wof.sequence))
+        
     ##MOVEMENT
     def moveRel(self, distx, disty, distz, spd):
         """
@@ -340,312 +447,194 @@ class MyFarmware():
         """
         log("going to " + str(posx) + ", " + str(posy) + ", " + str(posz), message_type='debug')
         info = send(cp.move_absolute(location=[posx, posy, posz], offset=[0,0,0], speed=spd))
-        return info
-
-    def Read(self, pin, mode, label):
-	""" pin : int 64 soil sensor
-	    mode : 0 digital 1 analog
-	    label : description str
-	"""
-	
-	info = send(cp.read_pin(number=pin, mode=mode, label = label))
-	return info
-
-    def Write(self, pin, val, m):
-	"""
-	   pin : int 10 for vaccum (0 up to 69)
-	   val : 1 on / 0 off
-	   m   : 0 digital / 1 analog
-	"""
-	# or send(...)
-	info = send(cp.write_pin(number=pin, value=val , mode=m))
+        self.coords = [posx, posy, posz]
         return info
     
-    def vacuum_on(self):
-	#Sequence0 vaccum on 
-	on = Sequence("0", "green")
-	on.add(log("Vaccum on ", message_type='info'))
-	#on.add(self.waiting(5000))
-	#on.add(log("waiting ok", message_type='info'))
-	on.add(self.Write(10,1,0))
-	send(cp.create_node(kind='execute', args=on.sequence))
-
-    def vacuum_off(self):
-	#Sequence01 vaccum off 
-	off = Sequence("01", "green")
-	off.add(log("Vaccum off ", message_type='info'))
-	#off.add(self.waiting(5000))
-	#off.add(log("waiting ok", message_type='info'))
-	off.add(self.Write(10,0,0))
-	send(cp.create_node(kind='execute', args=off.sequence))	
-
-    def water_on(self):
-	#Sequence01 vaccum off 
-	won = Sequence("02", "green")
-	won.add(log("Water on ", message_type='info'))
-	#off.add(self.waiting(5000))
-	#off.add(log("waiting ok", message_type='info'))
-	won.add(self.Write(9,1,0))
-	send(cp.create_node(kind='execute', args=won.sequence))	
-
-    def water_off(self):
-	#Sequence01 vaccum off 
-	wof = Sequence("03", "green")
-	wof.add(log("Water off ", message_type='info'))
-	#off.add(self.waiting(5000))
-	#off.add(log("waiting ok", message_type='info'))
-	wof.add(self.Write(9,0,0))
-	send(cp.create_node(kind='execute', args=wof.sequence))	
-	
-
-    def Reading(self, pin, signal ):
-	"""
-	    pin : int pin number
-	    signal : 1 analog   /   0 digital
-	"""
-
-	#Sequence redaing pin value	
-	ss = Sequence("40", "green")
-        ss.add(log("Read pin {}.".format(pin), message_type='info'))
-	ss.add(self.Read(pin, signal,'Soil'))
-	ss.add(log("Data loaded.", message_type='info'))
-        send(cp.create_node(kind='execute', args=ss.sequence))	
-
-    def exec_seq(self, id):
-	info = send(cp.execute_sequence(sequence_id=id))
-        return info
-
-
-    def gohome(self):
-	s2 = Sequence("2", "green")
-	s2.add(log("Go home ! ", message_type='info'))
-	s2.add(self.move(0,0,0,80))
-	send(cp.create_node(kind='execute', args=s2.sequence))
-
+    def waiting(self,time):
+        try:
+            log("Waiting {} ms".format(time), message_type='debug')
+            info = send(cp.wait(milliseconds=time))
+            return info
+        except Exception as error:
+            log("Wait --> " + repr(error))
+    
     def goto(self, x, y, z):
-	g = Sequence("13", "green")
-	g.add(self.move(x,y,z,80))
-	info = send(cp.create_node(kind='execute', args=g.sequence))
-	return info
+        s = Sequence("goto", "green")
+        s.add(self.move(self.coords[0], self.coords[1], 0, 100))
+        s.add(self.move(self.coords[0], y, 0, 100))
+        s.add(self.move(x, y, 0, 100))
+        s.add(self.move(x, y, z, 100))
+        s.add(log("Moved to "+str(x)+", "+str(y)+", "+str(z)+".", message_type='info'))
+        info = send(cp.create_node(kind='execute', args=s.sequence)) 
+        self.coords = [x, y, z]
+        return info
+    
+    def getTool(self, tool):
+        l = self.struct.toolList[tool]
+        s = Sequence("getTool", "green")
+        s.add(self.goto(l[0] , l[1], l[2]))
+        s.add(self.move(l[0] - 100, l[1], l[2], 50))
+        s.add(log("Getting "+tool+".", message_type='info'))
+        info = send(cp.create_node(kind='execute', args=s.sequence)) 
+        self.coords = [l[0] -100, l[1],l[2]]
+        return info
         
+    def putTool(self, tool):
+        l = self.struct.toolList[tool]
+        s = Sequence("putTool", "green")
+        s.add(self.goto(l[0] - 100 , l[1], l[2]-2))
+        s.add(self.move(l[0], l[1], l[2]-2, 50))
+        s.add(self.move(l[0], l[1], l[2] + 100, 50))
+        s.add(log("Putting back "+tool+".", message_type='info'))
+        send(cp.create_node(kind='execute', args=s.sequence)) 
+        self.coords = [l[0], l[1],l[2] + 100]
         
-    def getTool(self, iid):
-	
-	#Sequence take planter tool out 
-        if iid == 1:
-	   t = Sequence("110","green")
-           t.add(log("Go get Planter !.", message_type='info'))
-           t.add(self.move(self.list_Tool[0][0],self.list_Tool[0][1],0, 90))
-	   t.add(self.move(self.list_Tool[0][0],self.list_Tool[0][1], self.list_Tool[0][2], 90))
-	   t.add(self.move(self.list_Tool[0][0]-150, self.list_Tool[0][1], self.list_Tool[0][2], 90))
-	   t.add(self.move(self.list_Tool[0][0]-150, self.list_Tool[0][1],0, 80))
-	   info = send(cp.create_node(kind='execute', args=t.sequence))
-	
-	elif iid == 2:
-		tss = Sequence("155","green")
-		tss.add(log("Go get Seeder !.", message_type='info'))
-        	tss.add(self.move(self.list_Tool[1][0], self.list_Tool[1][1], self.list_Tool[1][2]-150, 90))
-		tss.add(self.move(self.list_Tool[1][0], self.list_Tool[1][1], self.list_Tool[1][2], 90))
-		tss.add(self.move(self.list_Tool[1][0]-150, self.list_Tool[1][1],self.list_Tool[1][2] , 90))
-		tss.add(self.move(self.list_Tool[0][0]-150, self.list_Tool[1][1],self.list_Tool[1][2], 80))
-		info = send(cp.create_node(kind='execute', args=tss.sequence))
-	return info
-      
-
-        
-    def putTool(self, iid):
-
-	#Sequence put tool back
-	if iid == 1:
-		b = Sequence("11", "green")
-		b.add(log("Put Planter back !.", message_type='info'))
-        	b.add(self.move(self.planter[0]-150, self.planter[1], self.planter[2], 80))
-		b.add(self.move(self.planter[0], self.planter[1], self.planter[2]+1, 80))
-		#up to 0 to leave tool
-		b.add(self.move(self.planter[0], self.planter[1],-150, 80))
-		send(cp.create_node(kind='execute', args=b.sequence))
-        
-	elif iid == 2:
-		#Put seeder tool back
-		ba = Sequence("11", "green")
-		ba.add(log("Put seeder back !.", message_type='info'))
-	        ba.add(self.move(self.c[0],self.c[1]-46,0, 80))
-		ba.add(self.move(self.seeder[0]-150, self.seeder[1],0, 80))
-		ba.add(self.move(self.seeder[0]-150, self.seeder[1],self.seeder[2], 80))
-		ba.add(self.move(self.seeder[0], self.seeder[1],self.seeder[2], 80))
-		ba.add(self.move(self.seeder[0], self.seeder[1],0, 80))
-		send(cp.create_node(kind='execute', args=ba.sequence))
-        
-
-
-
     def calibrate(self):
-        try:
-            i = 0
-            while True and i<21:
-                self.moveRel(100,0,0,50)
+        i = 0
+        while True and i<21:
+            try:
+                s = Sequence("xCalib", "green")
+                s.add(self.moveRel(-100,0,0,50))
+                s.add(log("Calibrating  x axis.", message_type='info'))
+                send(cp.create_node(kind='execute', args=s.sequence)) 
                 i += 1
-        except:
-            pass
-        try:
-            i = 0
-            while True and i<14:
-                self.moveRel(0,100,0,50)
+            except:
+                break
+        
+        i = 0
+        while True and i<14:
+            try:
+                s = Sequence("yCalib", "green")
+                s.add(self.moveRel(0,-100,0,50))
+                s.add(log("Calibrating  y axis.", message_type='info'))
+                send(cp.create_node(kind='execute', args=s.sequence)) 
                 i += 1
-        except:
-            pass
-        try:
-            i = 0
-            while True and i<4:
-                self.moveRel(0,0,100,50)
+            except:
+                break
+        
+        i = 0
+        while True and i<4:
+            try:
+                s = Sequence("zCalib", "green")
+                s.add(self.moveRel(0,0,100,50))
+                s.add(log("Calibrating  z axis.", message_type='info'))
+                send(cp.create_node(kind='execute', args=s.sequence)) 
                 i += 1
-        except:
-            pass 
+            except:
+                break
               
     ##SEQUENCES   
     def water(self):
         whereWater = []
-        l = self.s.waterAccessList
-        self.getTool("waterSensor")
+        l = self.struct.waterAccessList
+        self.getTool("soilSensor")
         for i in l:
-            self.goto(i[0], i[1], i[2])
-            sensor = waterSensor()
-            while sensor == False:
-                self.move(i[0], i[1], self.coords[2] - 20, 20)
-                self.coords[2] -= 20
-            whereWater.append(i[2]-self.coords[2])
-        self.putTool("waterSensor")
-        self.getTool("water")
+            self.goto(i[0], i[1], i[2]+78)
+            sensor = self.waterSensor()
+            while sensor == False and self.coords[2] >= -500: #<-- insert proper floor value
+                s = Sequence("findWater", "green")
+                s.add(self.move(i[0], i[1], self.coords[2] - 10, 20))
+                s.add(log("Looking for water.", message_type='info'))
+                send(cp.create_node(kind='execute', args=s.sequence)) 
+                self.coords[2] -= 10
+                sensor = self.waterSensor()
+                self.waiting(2000)
+            
+            whereWater.append(i[2]+78-self.coords[2])
+        self.putTool("soilSensor")
+        
         for i in range(len(l)):
             if whereWater[i] > 0:
                 self.goto(l[i][0], l[i][1], l[i][2])
                 self.waterFall(whereWater[i])
-        self.putTool("water")
     
+    def makePlant(self, pot, tplant):
+        if pot.plant == None:
+            plantTyper = next((y for y in self.struct.plantTypeList if y.name == tplant), None)
+            plant = Plant(plantTyper, pot)
+            log("Planting " + tplant + " in pot " + pot.ident, message_type='info')
+            pot.plant = plant
+            self.struct.plantList.append(plant)
+            if plant.kind.hole:
+                return None,plant
+            else:
+                return plant, plant
+                
+    def plant(self):
+        filer = join(dirname(__file__), 'input.txt')
+        holeL = []
+        plantL = []
+        readL = []
+        f = open(filer, "rb")
+        for line in f:
+            line = line.split()
+            readL.append((line[0],line[1]))
+        f.close()
+        
+        for p in readL:
+            for z in range(int(p[0])):
+                potter = next((pot for pot in self.struct.potList if pot.plant == None), None)
+                x = self.makePlant(potter, p[1])
+                if x[0] != None:
+                    holeL.append(x[0])
+                plantL.append(x[1])
+                
+        self.struct.savePlants()
+        self.struct.savePots()
+        self.getTool("planter")
+        for p in holeL:
+            self.goto(p.pot.x, p.pot.y, p.pot.z)   
+        self.putTool("planter")
+        self.getTool("seeder")
+        for p in plantL:
+            self.goto(p.kind.x, p.kind.y, p.kind.z)
+            self.vacuum_on()
+            self.goto(p.pot.x + 15, p.pot.y, p.pot.z + 75)
+            self.vacuum_off()
+        self.putTool("seeder")
+        
+        f = open(filer, "wb")
+        f.close()
+        
     def repot(self):
         return            
               
                   
     ##START POINT
-
     def run(self):
-	log("Hello {}".format(self.input_username), message_type='info')
+
         log("Farmware running...", message_type='info')
-       
-	# implement try : except : in case of network loss
-	#self.goto(self.coords1[0], self.coords1[1], self.coords1[2])
-	#self.gohome()
-	try: 
-		self.Reading(63,0)
-		self.waiting(2000)
-		self.Reading(64,1)	
-	except Exception as error:
-		log("Error Reading", message_type='info')
-
-	#Sequence take planter tool out 
-	self.getTool(self.list_Tool[0][3])	
-	
-	# Sequence1 ligne bac semis avec outil planter
-        s = Sequence("1", "green")
-	s.add(log("First move.", message_type='info'))
-        s.add(self.move(self.coords_bac[0], self.coords_bac[1], 0, 80))
-	s.add(self.moveRel(0,0,-410,100))
-	s.add(self.moveRel(0,0,60,80))
-
-	# Loop if for each rows
-	for i in range(1,4):
-		s.add(self.move(self.coords_bac[0], self.coords_bac[1]-i*46, -350, 80))
-		s.add(self.moveRel(0,0,-60,100))
-		s.add(self.moveRel(0,0,40,100))
-	s.add(self.moveRel(0,0,100,100))
-     	send(cp.create_node(kind='execute', args=s.sequence))
-	#sys.exit(0) doesn't work
-
-	#Put planter tool back
-	self.putTool(self.list_Tool[0][3])
-
-	#Sequence take seeder tool out 
-	self.getTool(self.list_Tool[1][3])
-	
-	###
-	#Go above seeds
-	self.goto(self.seeder[0]-150, self.seeder[1],-200)
-	self.goto(self.seeds[0],self.seeds[1],-200)
-	self.goto(self.seeds[0],self.seeds[1],self.seeds[2])
-
-	#Vacuum
-	self.vacuum_on()
-	self.goto(self.seeds[0],self.seeds[1],0)
-	
-	#go to bac seeder
-	self.goto(self.c[0],self.c[1]-46,-200)
-	self.goto(self.c[0],self.c[1],self.c[2])
-
-	#Vacuum
-	self.vacuum_off()
-
-	#### Do loop if..
-	#Go above seeds
-	self.goto(self.c[0], self.c[1],0)
-	self.goto(self.seeds[0],self.seeds[1],-200)
-	self.goto(self.seeds[0],self.seeds[1],self.seeds[2])
-
-	#Vacuum
-	self.vacuum_on()
-	self.goto(self.seeds[0],self.seeds[1],0)
-	
-	#go to bac seeder
-	self.goto(self.c[0],self.c[1]-46,-200)
-	self.goto(self.c[0],self.c[1]-46,self.c[2])
-
-	#Vacuum
-	self.vacuum_off()
-	
-
-	#Put seeder tool back
-	self.putTool(2)
-	
-
-	#go to bac seeder
-	self.goto(self.c[0]-30,self.c[1]-20,-200)
-	self.goto(self.c[0]-30,self.c[1]-20,self.c[2])
-
-	#Water on
-	self.water_on()
-	self.waiting(2000)
-	self.water_off()
-
-	#Sequence2 home
-	self.gohome()
-	
-	
-	
-        ##TESTS
+        self.struct = Structure()
+        log("Data loaded.", message_type='info')
         
-        #self.s.sendMail(0)
-        #self.s.initFarmLayout()
-        #self.s.initPlantTypes()
-        #print(struct.currDate())
-        #print(struct.currTime())
-        #print(list(pot.region.ident for pot in self.s.potList))
-        #print(list(self.s.regionList[region].ident for region in self.s.regionList))
-        #print(list(pt.name for pt in self.s.plantTypeList))
-        #print("lol Sylvain") 
-        #plant pickle test
-        #self.s.plantList.append(Plant("plant1", potList[0].ident))
-        #print(list(plant.id for plant in plantList))
-        #savePlants()
-        """
-        print(struct.plantList, " <-- plantlist")
-        print(struct.waterAccessList, " <-- waterAccessList")
-        print(struct.plantTypeList, " <-- plantTypeList")
-        print(struct.waterList, " <-- waterList")
-        print(struct.repotList, " <-- repotList")
-        print(struct.potList, " <-- potList")
-        print(struct.regionList, " <-- regionList")
-        print(struct.toolList, " <-- toolList")
-        """
-        #loadPlants()
-        #print(list(plant.id for plant in plantList))
+        self.goto(0,0,0)
+        self.water()
+        self.plant()
+	self.goto(0,0,0) # return to the home position
         
+        log("Execution successful.", message_type='info')
+                
       
+        
+        ##MAIN WHILE
+        while True:
+            """
+            check timelists for tasks, else wait the remaining time
+            """
+            break
+            currHour = int(self.s.currTime().split(":")[0])
+            if (currHour in self.s.waterList) and (self.s.waterList != []):
+                self.water()
+                self.s.waterList = self.s.waterList[1:]
+                
+            if (currHour in self.s.repotList) and (self.s.repotList != []):
+                self.repot()
+                del self.s.repotList[currHour] 
+                
+            currMin = int(self.s.currTime().split(":")[1])  
+            self.waiting((59 - currMin)*60*1000) #59 instead of 60 as safety
+            
+            
+            
+            
+        

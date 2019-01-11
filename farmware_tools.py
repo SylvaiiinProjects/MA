@@ -30,6 +30,7 @@ def send_celery_script(command):
             headers={'Authorization': 'Bearer ' + token,
                      'content-type': 'application/json'},
             data=json.dumps(command))
+        
         return 0
 
 def log(message, message_type='info'):
@@ -41,4 +42,4 @@ def log(message, message_type='info'):
             'message_type': message_type}})
 
 if __name__ == '__main__':
-      log('Hello World!', 'success')
+    log('Hello World!', 'success')
