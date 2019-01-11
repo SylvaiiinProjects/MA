@@ -610,7 +610,7 @@ class MyFarmware():
         self.goto(0,0,0)
         self.water()
         self.plant()
-	self.goto(0,0,0) # return to the home position
+        self.goto(0,0,0) # return to the home position
         
         log("Execution successful.", message_type='info')
                 
