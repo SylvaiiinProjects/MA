@@ -538,7 +538,7 @@ class MyFarmware():
         
         for i in range(len(l)):
             if whereWater[i] > 0:
-                self.goto(l[i][0], l[i][1], l[i][2])
+                self.goto(l[i][0], l[i][1], l[i][2]+20)
                 self.waterFall(whereWater[i])
       
     
