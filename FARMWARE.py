@@ -524,7 +524,7 @@ class MyFarmware():
         for i in l:
             self.goto(i[0], i[1], i[2]+78)
             sensor = self.waterSensor()
-            while sensor == False and self.coords[2] >= -300: #<-- insert proper floor value
+            while sensor == False and self.coords[2] >= -600: #<-- insert proper floor value
                 s = Sequence("findWater", "green")
                 s.add(self.move(i[0], i[1], self.coords[2] - 10, 20))
                 s.add(log("Looking for water.", message_type='info'))
