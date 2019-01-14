@@ -522,7 +522,7 @@ class MyFarmware():
         l = self.struct.waterAccessList
         self.getTool("soilSensor")
         for i in l:
-            self.goto(i[0], i[1], i[2]+20)
+            self.goto(i[0], i[1], i[2]+78)
             sensor = self.waterSensor()
             while sensor == False and self.coords[2] >= -300: #<-- insert proper floor value
                 s = Sequence("findWater", "green")
@@ -533,7 +533,7 @@ class MyFarmware():
                 sensor = self.waterSensor()
                 self.waiting(2000)
             
-            whereWater.append(i[2]+20-self.coords[2])
+            whereWater.append(i[2]+78-self.coords[2])
         self.putTool("soilSensor")
         
         for i in range(len(l)):
