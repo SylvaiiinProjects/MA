@@ -7,19 +7,15 @@ import CeleryPy as cp
 from os.path import dirname, join
 
 ##List of functions and classes for ease of use
-
 """
 SECONDARY FUNCTION CLASSES:
-
 PlantType(name, lightNeeded, growthTimeS, growthTimeP, growthTimeF)
 Plant(kind, pot)
 Pot(region, posx, posy, posz)
 Region(ident, gs, position)
 Structure()
 ___________________________________________________________________
-
 parameter lists of Structure:
-
 plantTypeList = plant type repository for accessing data for growth needs
 waterList = [time]                --> when to water which pot
 repotList = dict[time] = [Plant]  --> when to repot a certain plant
@@ -27,9 +23,7 @@ plantList = current plants
 potList = a list of pots. This is useful for watering.
 regionList = a list of the regions... for specific tasks
 ___________________________________________________________________
-
 methods of Structure:
-
 currDate()
 currTime()
 uWaterList(step) --> step = interval between water checks
@@ -329,8 +323,7 @@ class Structure():
         else:
             textfile = "./errormsg.txt"
             subject = "An error occurred."
-  
-# One of the most important class of the Farmware          
+            
 class Sequence:
     def __init__(self, name='New Sequence', color='gray'):
         self.sequence = {
@@ -602,7 +595,6 @@ class MyFarmware():
                   
     ##START POINT
     def run(self):
-
         log("Farmware running...", message_type='info')
         self.struct = Structure()
         log("Data loaded.", message_type='info')
@@ -610,11 +602,37 @@ class MyFarmware():
         self.goto(0,0,0)
         self.water()
         self.plant()
-        self.goto(0,0,0) # return to the home position
         
         log("Execution successful.", message_type='info')
                 
-      
+        ##TESTS
+        
+        #self.s.sendMail(0)
+        #self.s.initFarmLayout()
+        #self.s.initPlantTypes()
+        #print(struct.currDate())
+        #print(struct.currTime())
+        #print(list(pot.region.ident for pot in self.s.potList))
+        #print(list(self.s.regionList[region].ident for region in self.s.regionList))
+        #print(list(pt.name for pt in self.s.plantTypeList))
+        #print("lol Sylvain") 
+        #plant pickle test
+        #self.s.plantList.append(Plant("plant1", potList[0].ident))
+        #print(list(plant.id for plant in plantList))
+        #savePlants()
+        """
+        print(self.struct.toolList, " <-- toollist")
+        print(self.struct.plantList, " <-- plantlist")
+        print(self.struct.waterAccessList, " <-- waterAccessList")
+        print(self.struct.plantTypeList, " <-- plantTypeList")
+        print(self.struct.waterList, " <-- waterList")
+        print(self.struct.repotList, " <-- repotList")
+        print(len(self.struct.potList), " <-- potList")
+        print(self.struct.regionList, " <-- regionList")
+        print(self.struct.toolList, " <-- toolList")
+        """
+        #loadPlants()
+        #print(list(plant.id for plant in plantList))
         
         ##MAIN WHILE
         while True:
