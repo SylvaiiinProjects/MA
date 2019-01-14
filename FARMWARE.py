@@ -455,7 +455,7 @@ class MyFarmware():
         s = Sequence("goto", "green")
         s.add(self.move(self.coords[0], self.coords[1], 0, 100))
         s.add(self.move(self.coords[0], y, 0, 100))
-        s.add(self.move(x, y, 0, 100))
+        s.add(self.move(x, y, 0, 110))
         s.add(self.move(x, y, z, 100))
         s.add(log("Moved to "+str(x)+", "+str(y)+", "+str(z)+".", message_type='info'))
         info = send(cp.create_node(kind='execute', args=s.sequence)) 
@@ -522,9 +522,9 @@ class MyFarmware():
         l = self.struct.waterAccessList
         self.getTool("soilSensor")
         for i in l:
-            self.goto(i[0], i[1], i[2]+78)
+            self.goto(i[0], i[1], i[2]+20)
             sensor = self.waterSensor()
-            while sensor == False and self.coords[2] >= -500: #<-- insert proper floor value
+            while sensor == False and self.coords[2] >= -300: #<-- insert proper floor value
                 s = Sequence("findWater", "green")
                 s.add(self.move(i[0], i[1], self.coords[2] - 10, 20))
                 s.add(log("Looking for water.", message_type='info'))
@@ -533,7 +533,7 @@ class MyFarmware():
                 sensor = self.waterSensor()
                 self.waiting(2000)
             
-            whereWater.append(i[2]+78-self.coords[2])
+            whereWater.append(i[2]+20-self.coords[2])
         self.putTool("soilSensor")
         
         for i in range(len(l)):
