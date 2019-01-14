@@ -1,5 +1,3 @@
-
-
 import os
 from FARMWARE import MyFarmware
 from FARMWARE import Sequence
@@ -12,8 +10,8 @@ FARMWARE_NAME = "jhempbot"
 
 def main():
     log("jhempbot")
-    farmware = MyFarmware(FARMWARE_NAME) # create the object farmware
-    farmware.run() # call the method run() of the module object "farmware"
+    farmware = MyFarmware(FARMWARE_NAME) 
+    farmware.run() 
     
 if __name__ == "__main__":
-    main() # Launch the function main()
+    main()
