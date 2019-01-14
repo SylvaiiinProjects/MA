@@ -1,5 +1,5 @@
 ﻿{
-     "package": "MA",
+     "package": "DEMO",
      "language": "python",
      "author": "Sylvain Vaugon & Ciarán Hagen",
      "description": "Automate farmbot processes",
@@ -10,4 +10,4 @@
      "executable": "python",
      "args": ["MA-master/launch.py"],
      "config": []
-}
+ }
