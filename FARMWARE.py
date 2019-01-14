@@ -601,7 +601,7 @@ class MyFarmware():
         log("Data loaded.", message_type='info')
         
         self.goto(0,0,0)
-        self.water()
+        #self.water()
         self.plant()
         self.goto(0,0,0)
         
