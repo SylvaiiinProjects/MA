@@ -535,13 +535,12 @@ class MyFarmware():
             
             whereWater.append(i[2]+78-self.coords[2])
         self.putTool("soilSensor")
-        try:
-            for i in range(len(l)):
-                if whereWater[i] > 0:
-                    self.goto(l[i][0], l[i][1], l[i][2])
-                    self.waterFall(whereWater[i])
-        except:
-            break
+        
+        for i in range(len(l)):
+            if whereWater[i] >= 0:
+                self.goto(l[i][0], l[i][1], l[i][2])
+                self.waterFall(whereWater[i])
+      
     
     def makePlant(self, pot, tplant):
         if pot.plant == None:
