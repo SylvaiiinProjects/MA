@@ -602,6 +602,7 @@ class MyFarmware():
         self.goto(0,0,0)
         self.water()
         self.plant()
+        self.goto(0,0,0)
         
         log("Execution successful.", message_type='info')
                 
