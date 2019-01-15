@@ -373,6 +373,7 @@ class MyFarmware():
         self.reading(63,0)
         self.waiting(2000)
         self.reading(64,1)
+        self.waiting(2000)
         
         headers = {'Authorization': 'bearer {}'.format(os.environ['FARMWARE_TOKEN']), 'content-type': "application/json"}
 
